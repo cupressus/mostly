@@ -1,0 +1,24 @@
+site_name: mostly
+site_description: A lightweight python library for building fuzzy inference systems.
+
+repo_name: cupressus/mostly
+repo_url: https://github.com/cupressus/mostly
+
+theme:
+  name: material
+  language: en
+
+extra:
+  social:
+    - icon: fontawesome/brands/github
+      link: https://github.com/cupressus/mostly
+    - icon: fontawesome/brands/linkedin
+      link: https://www.linkedin.com/in/moritz-meyer-analyst/
+
+nav:
+  - Home: index.md
+  #- Changelog: changelog.md
+  #- Tutorials: tutorials.md
+  #- How-To Guides: how_to_guide.md
+  #- Reference: api_reference.md
+  #- Explanation: changelog.md
