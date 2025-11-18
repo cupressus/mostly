@@ -7,13 +7,32 @@ repo_url: https://github.com/cupressus/mostly
 theme:
   name: material
   language: en
+  palette:
+    # Palette toggle for light mode
+    - scheme: default
+      primary: indigo
+      accent: pink
+      toggle:
+        icon: material/weather-night
+        name: Switch to dark mode
+
+    # Palette toggle for dark mode
+    - scheme: slate
+      primary: indigo
+      accent: pink
+      toggle:
+        icon: material/weather-sunny
+        name: Switch to light mode
+  font:
+    text: Roboto
+    code: Roboto Mono
 
 extra:
   social:
     - icon: fontawesome/brands/github
       link: https://github.com/cupressus/mostly
     - icon: fontawesome/brands/linkedin
-      link: https://www.linkedin.com/in/moritz-meyer-analyst/
+      link: https://www.linkedin.com/in/mmeyer-analyst/
 
 nav:
   - Home: index.md

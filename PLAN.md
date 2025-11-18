@@ -16,6 +16,7 @@ Pre-release.
 ## Roadmap
 - [ ] Visualization
 - [ ] Fuzzy Inference Trees
+- [ ] Theming
 
 ## Ideation
 - [ ] Sugeno
