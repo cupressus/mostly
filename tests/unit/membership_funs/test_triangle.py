@@ -2,6 +2,7 @@ import numpy as np
 import pytest
 from pydantic import ValidationError
 
+from src.mostly.membership_funs.trapezoid import MFTrapezoid
 from src.mostly.membership_funs.triangle import MFTriangle
 
 # region POSITIVE TESTS
@@ -19,11 +20,16 @@ from src.mostly.membership_funs.triangle import MFTriangle
         pytest.param(100, 0, id="oob right"),
     ],
 )
-def test_regular_membership(regular_triangular_mf: MFTriangle, input, expected) -> None:
-    """Test Regular Triangle Membership Function."""
+def test_regular_membership(
+    regular_triangular_mf: MFTriangle, triangular_trapezoidal_mf: MFTrapezoid, input, expected
+) -> None:
+    """Test Regular Triangle and Trapezoidal Triangle Membership Function."""
     assert regular_triangular_mf.shape == "regular"
     assert regular_triangular_mf(input) == expected
     assert regular_triangular_mf.support() == (0, 10)
+
+    assert triangular_trapezoidal_mf(input) == expected
+    assert triangular_trapezoidal_mf.support() == (0, 10)
 
 
 @pytest.mark.parametrize(
