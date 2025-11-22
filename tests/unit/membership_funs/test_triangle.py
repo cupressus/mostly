@@ -83,9 +83,15 @@ def test_compliance_validation() -> None:
 
 
 @pytest.mark.parametrize(
+    "mf_fixture_name",
+    [
+        "regular_triangular_mf",
+        "triangular_trapezoidal_mf",
+    ],
+)
+@pytest.mark.parametrize(
     "input",
     [
-        # right shoulder
         pytest.param(None, id="None"),
         pytest.param("nan", id="nan"),
         pytest.param(np.nan, id="numpy nan"),
@@ -97,7 +103,8 @@ def test_compliance_validation() -> None:
         pytest.param(-np.inf, id="numpy -inf"),
     ],
 )
-def test_invalid_input_type(regular_triangular_mf: MFTriangle, input) -> None:
+def test_invalid_input_type(request, mf_fixture_name, input) -> None:
     """Test invalid input type for membership function."""
+    mf = request.getfixturevalue(mf_fixture_name)
     with pytest.raises(ValidationError):
-        regular_triangular_mf(input)  # type: ignore
+        mf(input)  # type: ignore

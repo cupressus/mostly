@@ -1,4 +1,6 @@
-from pydantic import Field, FiniteFloat, model_validator, validate_call
+from typing import Literal
+
+from pydantic import Field, FiniteFloat, computed_field, model_validator, validate_call
 
 from src.mostly.membership_funs.base import MembershipFunction
 
@@ -7,6 +9,7 @@ class MFTrapezoid(MembershipFunction):
     """Trapezoidal Membership Function.
 
     A fuzzy membership function defined by four points (`a`, `b`, `c`, `d`) forming a trapezoidal shape.
+    Derived shapes (e.g. Triangles) are valid.
 
     Parameters
     ----------
@@ -29,7 +32,7 @@ class MFTrapezoid(MembershipFunction):
     Raises
     ------
     ValueError
-        If the trapezoid points do not satisfy a ≤ b ≤ c ≤ d.
+        If the trapezoid is not valid (e.g., points not in order, all points equal, etc.).
 
     """
 
@@ -43,22 +46,41 @@ class MFTrapezoid(MembershipFunction):
         """Validate model for correct Trapezoid."""
         if self.a > self.b or self.c > self.d or self.b > self.c:
             raise ValueError("Trapezoid points must satisfy a ≤ b ≤ c ≤ d")
-        return self
+        elif self.a == self.b == self.c == self.d:
+            raise ValueError("All points a, b, c, d cannot be equal; not a valid trapezoid")
+        elif self.a == self.b and self.c == self.d:
+            raise ValueError("Both shoulders cannot be equal; not a valid trapezoid")
+        else:
+            return self
+
+    @computed_field
+    @property
+    def shape(self) -> Literal["left", "regular", "right"]:
+        """Trapezoid Type."""
+        match True:
+            case _ if self.a == self.b and self.c != self.d:
+                return "left"
+            case _ if self.a != self.b and self.c == self.d:
+                return "right"
+            case _:
+                return "regular"
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
         """Calculate degree of Membership for a given input `x`."""
-        match x:
-            case x if x < self.a or x > self.d:
-                return 0.0
-            case x if self.a <= x <= self.b:
-                return (x - self.a) / (self.b - self.a)
-            case x if self.b < x < self.c:
-                return 1.0
-            case x if self.c <= x <= self.d:
-                return (self.d - x) / (self.d - self.c)
-            case _:
-                return 0.0
+        match self.shape:
+            case "left":
+                if x <= self.a:
+                    return 1.0
+                return max(min((self.d - x) / (self.d - self.c), 1.0), 0.0)
+            case "right":
+                if x >= self.d:
+                    return 1.0
+                return max(min((x - self.a) / (self.b - self.a), 1.0), 0.0)
+            case "regular":
+                if x <= self.a or x >= self.d:
+                    return 0.0
+                return max(min((x - self.a) / (self.b - self.a), 1.0, (self.d - x) / (self.d - self.c)), 0.0)
 
     def support(self) -> tuple[FiniteFloat, FiniteFloat]:
         """Provide 0 Cutoffs."""

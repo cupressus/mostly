@@ -60,3 +60,15 @@ def regular_trapezoidal_mf() -> MFTrapezoid:
 def triangular_trapezoidal_mf() -> MFTrapezoid:
     """Fixture that returns a trapezoidal membership function forced to be triangular."""
     return MFTrapezoid(a=0, b=5, c=5, d=10)
+
+
+@pytest.fixture
+def left_trapezoidal_triangular_mf() -> MFTrapezoid:
+    """Fixture that returns a left-shoulder trapezoidal membership function forced to be triangular."""
+    return MFTrapezoid(a=0, b=0, c=0, d=10)
+
+
+@pytest.fixture
+def right_trapezoidal_triangular_mf() -> MFTrapezoid:
+    """Fixture that returns a right-shoulder trapezoidal membership function forced to be triangular."""
+    return MFTrapezoid(a=0, b=10, c=10, d=10)
