@@ -81,6 +81,8 @@ class MFTrapezoid(MembershipFunction):
                 if x <= self.a or x >= self.d:
                     return 0.0
                 return max(min((x - self.a) / (self.b - self.a), 1.0, (self.d - x) / (self.d - self.c)), 0.0)
+            case _:  # pragma: no cover
+                raise RuntimeError(f"Unexpected trapezoid shape: {self.shape}")
 
     def support(self) -> tuple[FiniteFloat, FiniteFloat]:
         """Provide 0 Cutoffs."""

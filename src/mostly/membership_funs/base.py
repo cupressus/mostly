@@ -9,9 +9,9 @@ class MembershipFunction(BaseModel, ABC):
     @abstractmethod
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
         """Calculate Degree of Membership for a given input `x`."""
-        raise NotImplementedError(f"{self.__class__.__name__} must implement __call__ method")
+        raise NotImplementedError(f"{self.__class__.__name__} must implement __call__ method")  # pragma: no cover
 
     @abstractmethod
     def support(self) -> tuple[FiniteFloat, FiniteFloat]:
         """Provide 0 Cutoffs for the Membership Function."""
-        raise NotImplementedError(f"{self.__class__.__name__} must implement support method")
+        raise NotImplementedError(f"{self.__class__.__name__} must implement support method")  # pragma: no cover

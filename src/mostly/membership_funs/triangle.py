@@ -71,7 +71,7 @@ class MFTriangle(MembershipFunction):
                 return max(min((self.c - x) / (self.c - self.a), 1), 0)
             case "right":
                 return max(min((x - self.a) / (self.c - self.a), 1), 0)
-            case _:
+            case _:  # pragma: no cover
                 raise RuntimeError(f"Unexpected triangle shape: {self.shape}")
 
     def support(self) -> tuple[FiniteFloat, FiniteFloat]:

@@ -21,6 +21,7 @@ from src.mostly.membership_funs.trapezoid import MFTrapezoid
 )
 def test_regular_membership(regular_trapezoidal_mf: MFTrapezoid, input, expected) -> None:
     """Test Regular Trapezoidal Membership Function."""
+    assert regular_trapezoidal_mf.shape == "regular"
     assert regular_trapezoidal_mf(input) == expected
     assert regular_trapezoidal_mf.support() == (0, 10)
 
