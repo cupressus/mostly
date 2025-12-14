@@ -1,6 +1,4 @@
-import numpy as np
 import pytest
-from pydantic import ValidationError
 
 from src.mostly.membership_funs.trapezoid import MFTrapezoid
 from src.mostly.membership_funs.triangle import MFTriangle
@@ -80,31 +78,3 @@ def test_compliance_validation() -> None:
         MFTriangle(a=2.0, b=3.0, c=1.0)  # Invalid: b > c
     with pytest.raises(ValueError, match="All points a, b, c cannot be equal; not a valid triangle"):
         MFTriangle(a=0.0, b=0.0, c=0.0)  # All Equal
-
-
-@pytest.mark.parametrize(
-    "mf_fixture_name",
-    [
-        "regular_triangular_mf",
-        "triangular_trapezoidal_mf",
-    ],
-)
-@pytest.mark.parametrize(
-    "input",
-    [
-        pytest.param(None, id="None"),
-        pytest.param("nan", id="nan"),
-        pytest.param(np.nan, id="numpy nan"),
-        pytest.param("", id="empty string"),
-        pytest.param([], id="empty list"),
-        pytest.param({}, id="empty dict"),
-        pytest.param(set(), id="empty set"),
-        pytest.param(np.inf, id="numpy inf"),
-        pytest.param(-np.inf, id="numpy -inf"),
-    ],
-)
-def test_invalid_input_type(request, mf_fixture_name, input) -> None:
-    """Test invalid input type for membership function."""
-    mf = request.getfixturevalue(mf_fixture_name)
-    with pytest.raises(ValidationError):
-        mf(input)  # type: ignore

@@ -1,6 +1,7 @@
 import pytest
 
 from src.mostly.membership_funs.base import MembershipFunction
+from src.mostly.membership_funs.gaussian import MFGaussian
 from src.mostly.membership_funs.trapezoid import MFTrapezoid
 from src.mostly.membership_funs.triangle import MFTriangle
 
@@ -72,3 +73,10 @@ def left_trapezoidal_triangular_mf() -> MFTrapezoid:
 def right_trapezoidal_triangular_mf() -> MFTrapezoid:
     """Fixture that returns a right-shoulder trapezoidal membership function forced to be triangular."""
     return MFTrapezoid(a=0, b=10, c=10, d=10)
+
+
+# region FIXTURES GAUSSIAN MF
+@pytest.fixture
+def regular_gaussian_mf() -> "MFGaussian":
+    """Fixture that returns a standard Gaussian membership function."""
+    return MFGaussian(mean=5.0, sigma=1.0, k_sigma=4)
