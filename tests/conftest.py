@@ -1,5 +1,6 @@
 import pytest
 
+from src.mostly.linguistic_variable import LinguisticVariable
 from src.mostly.membership_funs.base import MembershipFunction
 from src.mostly.membership_funs.gaussian import MFGaussian
 from src.mostly.membership_funs.trapezoid import MFTrapezoid
@@ -80,3 +81,19 @@ def right_trapezoidal_triangular_mf() -> MFTrapezoid:
 def regular_gaussian_mf() -> "MFGaussian":
     """Fixture that returns a standard Gaussian membership function."""
     return MFGaussian(mean=5.0, sigma=1.0, k_sigma=4)
+
+
+# region FIXTURES LINGUISTIC VARIABLE
+@pytest.fixture
+def simple_linguistic_variable() -> "LinguisticVariable":
+    """Fixture that returns a simple LinguisticVariable instance."""
+    lv = LinguisticVariable(
+        concept="temperature",
+        uod=(0.0, 100.0),
+        fuzzy_sets={
+            "cold": MFTriangle(a=25.0, b=25.0, c=50.0),
+            "warm": MFTriangle(a=25.0, b=50.0, c=75.0),
+            "hot": MFTriangle(a=50.0, b=75.0, c=75.0),
+        },
+    )
+    return lv
