@@ -21,10 +21,9 @@ class Is:
             The term representing the fuzzy state of the concept e.g. 'hot', 'cold'.
 
     Examples:
-        condition = Is(concept="temperature", term="hot")
-
-        condition.pretty()
-        # Output: "(temperature IS hot)"
+        >>> condition = Is(concept="temperature", term="hot")
+        >>> condition.pretty()
+        "(temperature IS hot)"
 
     """
 

@@ -1,7 +1,5 @@
-import pytest
 from src.mostly.fuzzy_rules.fuzzy_rule import FuzzyRule
-from src.mostly.fuzzy_rules.logical_operators import And, Is, Or
-
+from src.mostly.fuzzy_rules.logical_operators import Is, Or
 from src.mostly.inference.mamdani import MamdaniFIS
 from src.mostly.linguistic_variable import LinguisticVariable
 from src.mostly.membership_funs.triangle import MFTriangle
@@ -80,3 +78,11 @@ def test_mamdani_inference():
         ).get("tip_amount"),
         float,
     )
+
+
+def test_pretty_rules():
+    """Test pretty string representation of fuzzy rules."""
+    rule = rules[0]
+    pretty_str = rule.pretty()
+    expected_str = "IF ((food_quality IS poor) OR (service_quality IS poor)) THEN (tip_amount IS low) [weight: 1.0]"
+    assert pretty_str == expected_str

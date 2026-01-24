@@ -15,23 +15,25 @@ class FuzzyRule(BaseModel):
             The consequences (THEN part) of the rule, mapping concepts to their resulting terms.
             For example {"temperature": "hot"}.
         weight : FiniteFloat, optional
-            The weight of the rule, default is 1.0. This can be used to adjust the influence of the rule
-            on the output.
+            The weight of the rule, default is 1.0. This can be used to adjust the influence of the
+            rule on the output.
 
     Example:
-    >>> rule = FuzzyRule(
-    ...     antecedent=And(
-    ...         children=[
-    ...             Is(concept="temperature", term="hot"),
-    ...             Or([
-    ...                 Is(concept="humidity", term="high"),
-    ...                 Not(Is(concept="wind", term="strong"))
-    ...             ]),
-    ...         ]
-    ...     ),
-    ...     consequences={"fan_speed": "high"},
-    ...     weight=1.0,
-    ... )
+        >>> rule = FuzzyRule(
+        ...     antecedent=And(
+        ...         children=[
+        ...             Is(concept="temperature", term="hot"),
+        ...             Or(
+        ...                 [
+        ...                     Is(concept="humidity", term="high"),
+        ...                     Not(Is(concept="wind", term="strong")),
+        ...                 ]
+        ...             ),
+        ...         ]
+        ...     ),
+        ...     consequences={"fan_speed": "high"},
+        ...     weight=1.0,
+        ... )
 
     """
 
