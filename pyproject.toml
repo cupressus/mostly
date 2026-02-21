@@ -26,6 +26,9 @@ test = [
     "pytest>=9.0.1",
     "pytest-cov>=7.0.0",
 ]
+visualize = [
+    "altair>=6.0.0",
+]
 
 [tool.ruff]
 # Exclude a variety of commonly ignored directories.

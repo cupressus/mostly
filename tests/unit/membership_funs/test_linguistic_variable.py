@@ -1,8 +1,10 @@
+import altair as alt
 import pytest
 from pydantic import ValidationError
 
 from src.mostly.linguistic_variable import LinguisticVariable
 from src.mostly.membership_funs.triangle import MFTriangle
+from src.mostly.plotting.plot_linguistic_variable import PlotLinguisticVariable
 
 # region POSITIVE TESTS
 
@@ -69,3 +71,13 @@ def test_get_fuzzy_set_invalid_term(simple_linguistic_variable: LinguisticVariab
 
     err = exc.value
     assert "Fuzzy set for term 'freezing' not found in linguistic variable 'temperature'" in str(err)
+
+
+# region PLOTTING TESTS
+def test_plotting(simple_linguistic_variable: LinguisticVariable) -> None:
+    """Test that the plot method returns an Altair chart without errors."""
+    plotter = PlotLinguisticVariable()
+    plotter.lv = simple_linguistic_variable  # type: ignore
+    chart = plotter.plot()
+    assert chart is not None
+    assert isinstance(chart, (alt.Chart, alt.LayerChart))
