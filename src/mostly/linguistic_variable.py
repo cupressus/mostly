@@ -1,13 +1,13 @@
 from typing import Annotated
 
-from pydantic import AfterValidator, BaseModel, Field, FiniteFloat, StringConstraints, model_validator, validate_call
+from pydantic import AfterValidator, BaseModel, FiniteFloat, StringConstraints, model_validator, validate_call
 
 from .membership_funs.base import MembershipFunction
 
 # force Concept to be snake_case using pydantic AfterValidator
 SnakedStr = Annotated[
     str,
-    Field(StringConstraints(strip_whitespace=True, to_lower=True)),
+    StringConstraints(strip_whitespace=True, to_lower=True),
     AfterValidator(lambda v: v.replace(" ", "_")),
 ]
 

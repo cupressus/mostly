@@ -6,9 +6,18 @@ from src.mostly.linguistic_variable import LinguisticVariable
 
 
 class PlotLinguisticVariable:
-    """Mixin class to provide a plot method for linguistic variables."""
+    """Class to provide a plot method for linguistic variables."""
 
-    lv: LinguisticVariable
+    def __init__(self, lv: LinguisticVariable) -> None:
+        """Initialize the PlotLinguisticVariable class.
+
+        Parameters
+        ----------
+        lv : LinguisticVariable
+            The linguistic variable to plot.
+
+        """
+        self.lv = lv
 
     def plot(
         self,

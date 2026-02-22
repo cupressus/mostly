@@ -76,8 +76,7 @@ def test_get_fuzzy_set_invalid_term(simple_linguistic_variable: LinguisticVariab
 # region PLOTTING TESTS
 def test_plotting(simple_linguistic_variable: LinguisticVariable) -> None:
     """Test that the plot method returns an Altair chart without errors."""
-    plotter = PlotLinguisticVariable()
-    plotter.lv = simple_linguistic_variable  # type: ignore
+    plotter = PlotLinguisticVariable(simple_linguistic_variable)
     chart = plotter.plot()
     assert chart is not None
     assert isinstance(chart, (alt.Chart, alt.LayerChart))
