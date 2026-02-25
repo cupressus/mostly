@@ -1,11 +1,36 @@
 from typing import Any, Literal
 
 import numpy as np
-from pydantic import BaseModel, ConfigDict, FiniteFloat, validate_call
+from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, validate_call
 
 from ..fuzzy_rules.fuzzy_rule import FuzzyRule
 from ..linguistic_variable import LinguisticVariable
 from ..membership_funs.base import MembershipFunction
+
+
+class InferenceConfig(BaseModel):
+    """Configuration for the Mamdani Fuzzy Inference System (FIS).
+
+    Attributes
+    ----------
+    resolution : int, Default: 500
+        The number of points to use for output aggregation.
+
+    aggregation : Literal["max", "sum", "probor"]
+        The method to use for aggregating rule outputs.
+
+    implication : Literal["clip", "scale"]
+        The method to use for applying rule strengths to output membership functions.
+
+    defuzzification : Literal["centroid"]
+        The method to use for defuzzifying the aggregated outputs.
+
+    """
+
+    resolution: int = 500
+    aggregation: Literal["max", "sum", "probor"] = "max"
+    implication: Literal["clip", "scale"] = "clip"
+    defuzzification: Literal["centroid"] = "centroid"
 
 
 class MamdaniFIS(BaseModel):
@@ -30,7 +55,8 @@ class MamdaniFIS(BaseModel):
     input_variables: dict[str, LinguisticVariable]
     output_variables: dict[str, LinguisticVariable]
     fuzzy_rules: list[FuzzyRule]
-    meta_fields: dict[str, Any] = {}
+    inference_config: InferenceConfig = Field(default_factory=InferenceConfig)
+    meta_fields: dict[str, Any] = Field(default_factory=dict)
 
     model_config = ConfigDict(arbitrary_types_allowed=True)
 
@@ -172,10 +198,6 @@ class MamdaniFIS(BaseModel):
     def infer(
         self,
         crisp_inputs: dict[str, float],
-        resolution: int = 500,
-        aggregation: Literal["max", "sum", "probor"] = "max",
-        implication: Literal["clip", "scale"] = "clip",
-        defuzzification: Literal["centroid"] = "centroid",
     ) -> dict[str, float]:
         """Perform fuzzy inference on the given inputs.
 
@@ -200,5 +222,10 @@ class MamdaniFIS(BaseModel):
         """
         fuzzified_inputs = self._fuzzification(crisp_inputs)
         rule_strengths = self._rule_evaluation(fuzzified_inputs)
-        aggregated_outputs = self._aggregation(rule_strengths, resolution, aggregation, implication)
-        return self._defuzzification(aggregated_outputs, defuzzification)
+        aggregated_outputs = self._aggregation(
+            rule_strengths,
+            self.inference_config.resolution,
+            self.inference_config.aggregation,
+            self.inference_config.implication,
+        )
+        return self._defuzzification(aggregated_outputs, self.inference_config.defuzzification)
