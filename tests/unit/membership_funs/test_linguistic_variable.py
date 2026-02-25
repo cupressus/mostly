@@ -4,7 +4,7 @@ from pydantic import ValidationError
 
 from src.mostly.linguistic_variable import LinguisticVariable
 from src.mostly.membership_funs.triangle import MFTriangle
-from src.mostly.plotting.plot_linguistic_variable import PlotLinguisticVariable
+from src.mostly.plotting.altair.plot_linguistic_variable import plot_linguistic_variable
 
 # region POSITIVE TESTS
 
@@ -76,7 +76,6 @@ def test_get_fuzzy_set_invalid_term(simple_linguistic_variable: LinguisticVariab
 # region PLOTTING TESTS
 def test_plotting(simple_linguistic_variable: LinguisticVariable) -> None:
     """Test that the plot method returns an Altair chart without errors."""
-    plotter = PlotLinguisticVariable(simple_linguistic_variable)
-    chart = plotter.plot()
+    chart = plot_linguistic_variable(simple_linguistic_variable)
     assert chart is not None
     assert isinstance(chart, (alt.Chart, alt.LayerChart))
