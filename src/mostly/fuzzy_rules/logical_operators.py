@@ -1,11 +1,11 @@
 from typing import Annotated
 
-from pydantic import AfterValidator, Field, StringConstraints
+from pydantic import AfterValidator, StringConstraints
 from pydantic.dataclasses import dataclass
 
 SnakedStr = Annotated[
     str,
-    Field(StringConstraints(strip_whitespace=True, to_lower=True)),
+    StringConstraints(strip_whitespace=True, to_lower=True),
     AfterValidator(lambda v: v.replace(" ", "_")),
 ]
 
