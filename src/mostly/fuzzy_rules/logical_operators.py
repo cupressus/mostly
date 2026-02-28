@@ -1,7 +1,7 @@
-from dataclasses import dataclass
 from typing import Annotated
 
 from pydantic import AfterValidator, Field, StringConstraints
+from pydantic.dataclasses import dataclass
 
 SnakedStr = Annotated[
     str,
