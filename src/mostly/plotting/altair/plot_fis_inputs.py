@@ -13,11 +13,11 @@ def plot_inference_inputs(
 
     Args:
         fis: A Mamdani fuzzy inference system.
-        crisp_inputs: Optional dictionary of crisp input values to highlight on the plots.
-        resolution: The resolution of the plots.
+        crisp_inputs: Optional dictionary of crisp input values to highlight on the plots e.g. {'temperature': 25.0}.
+        resolution: Optional resolution of the plots.
 
     Returns:
-        An Altair HConcatChart containing the plots of the input variables.
+        HConcatChart: An Altair HConcatChart containing the plots of the input variables.
 
     """
     charts = []
