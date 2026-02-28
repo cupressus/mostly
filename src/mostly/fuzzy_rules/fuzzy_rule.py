@@ -1,7 +1,7 @@
 # %%
 from pydantic import BaseModel, ConfigDict, FiniteFloat
 
-from .logical_operators import And, Is, Not, Or
+from .logical_operators import And, Is, Not, Or, SnakedStr
 
 
 class FuzzyRule(BaseModel):
@@ -40,7 +40,7 @@ class FuzzyRule(BaseModel):
     model_config = ConfigDict(str_strip_whitespace=True, str_to_lower=True)
 
     antecedent: Is | And | Or | Not
-    consequences: dict[str, str]
+    consequences: dict[SnakedStr, SnakedStr]
     weight: FiniteFloat = 1.0
 
     def eval(self, fuzzified_input: dict[str, dict[str, float]]) -> FiniteFloat:
