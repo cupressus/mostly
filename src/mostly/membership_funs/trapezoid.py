@@ -26,8 +26,6 @@ class MFTrapezoid(MembershipFunction):
     -------
     __call__
         Calculates the degree of membership for the input `x`.
-    support()
-        Returns the interval [a, d] where the membership function is non-zero.
 
     Raises
     ------
@@ -83,7 +81,3 @@ class MFTrapezoid(MembershipFunction):
                 return max(min((x - self.a) / (self.b - self.a), 1.0, (self.d - x) / (self.d - self.c)), 0.0)
             case _:  # pragma: no cover
                 raise RuntimeError(f"Unexpected trapezoid shape: {self.shape}")
-
-    def support(self) -> tuple[FiniteFloat, FiniteFloat]:
-        """Provide 0 Cutoffs."""
-        return self.a, self.d

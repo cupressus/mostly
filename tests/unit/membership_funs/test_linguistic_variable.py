@@ -1,6 +1,5 @@
 import altair as alt
 import pytest
-from pydantic import ValidationError
 
 from src.mostly.linguistic_variable import LinguisticVariable
 from src.mostly.membership_funs.triangle import MFTriangle
@@ -37,31 +36,6 @@ def test_get_fuzzy_set(simple_linguistic_variable: LinguisticVariable) -> None:
     assert isinstance(cold_fs, MFTriangle)
     assert isinstance(warm_fs, MFTriangle)
     assert isinstance(hot_fs, MFTriangle)
-
-
-# region NEGATIVE TESTS
-def test_uod_compliance_message() -> None:
-    """Ensure the validator's message is surfaced in Pydantic's ValidationError."""
-    with pytest.raises(ValidationError) as exc:
-        LinguisticVariable(
-            concept="temperature",
-            uod=(0.0, 100.0),
-            fuzzy_sets={
-                "cold": MFTriangle(a=25.0, b=25.0, c=50.0),
-                "warm": MFTriangle(a=25.0, b=50.0, c=75.0),
-                "hot": MFTriangle(a=50.0, b=150.0, c=150.0),
-            },
-        )
-
-    err = exc.value
-    # Pydantic wraps the ValueError raised in the model validator into a ValidationError
-    assert hasattr(err, "errors"), "Expected a Pydantic ValidationError"
-    errs = err.errors()
-    # There should be at least one error of type 'value_error'
-    ve = next((e for e in errs if e.get("type") == "value_error"), None)
-    assert ve is not None
-    # Check the custom message substring for stability across versions
-    assert "outside the linguistic variable UOD" in ve.get("msg", "")
 
 
 def test_get_fuzzy_set_invalid_term(simple_linguistic_variable: LinguisticVariable) -> None:

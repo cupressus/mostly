@@ -21,8 +21,6 @@ class MFGeneralizedBell(MembershipFunction):
     -------
     __call__
         Calculates the degree of membership for the input `x`.
-    support()
-        Returns the interval where the membership function is non-zero.
 
     Notes
     -----
@@ -38,11 +36,3 @@ class MFGeneralizedBell(MembershipFunction):
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
         """Calculate degree of Membership for a given input `x`."""
         return 1.0 / (1.0 + abs((x - self.center) / self.width) ** (2.0 * self.slope))
-
-    def support(self) -> tuple[FiniteFloat, FiniteFloat]:
-        """Provide 0 Cutoffs.
-
-        The generalized bell function never reaches exactly 0, so the support
-        is defined as the entire real line represented by finite float bounds.
-        """
-        return (float("-inf"), float("inf"))

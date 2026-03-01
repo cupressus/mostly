@@ -1,6 +1,6 @@
 from typing import Annotated
 
-from pydantic import AfterValidator, BaseModel, FiniteFloat, StringConstraints, model_validator, validate_call
+from pydantic import AfterValidator, BaseModel, FiniteFloat, StringConstraints, validate_call
 
 from .membership_funs.base import MembershipFunction
 
@@ -37,19 +37,6 @@ class LinguisticVariable(BaseModel):
     concept: SnakedStr
     uod: tuple[FiniteFloat, FiniteFloat]
     fuzzy_sets: dict[SnakedStr, MembershipFunction]
-
-    @model_validator(mode="after")
-    def uod_compliance(self) -> "LinguisticVariable":
-        """Ensure all fuzzy sets are compliant with the Universe of Discourse (UOD)."""
-        uod_min, uod_max = self.uod
-        for term, fs in self.fuzzy_sets.items():
-            fs_uod_min, fs_uod_max = fs.support()
-            if fs_uod_min < uod_min or fs_uod_max > uod_max:
-                raise ValueError(
-                    f"Fuzzy set for term '{term}' has UOD ({fs_uod_min}, {fs_uod_max}) "
-                    f"which is outside the linguistic variable UOD ({uod_min}, {uod_max})."
-                )
-        return self
 
     @validate_call
     def fuzzify(self, x: FiniteFloat) -> dict[SnakedStr, FiniteFloat]:
