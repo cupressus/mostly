@@ -4,7 +4,6 @@ from pydantic import AfterValidator, BaseModel, FiniteFloat, StringConstraints, 
 
 from .membership_funs.base import MembershipFunction
 
-# force Concept to be snake_case using pydantic AfterValidator
 SnakedStr = Annotated[
     str,
     StringConstraints(strip_whitespace=True, to_lower=True),
