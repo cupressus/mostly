@@ -3,6 +3,7 @@ import pytest
 from src.mostly.linguistic_variable import LinguisticVariable
 from src.mostly.membership_funs.base import MembershipFunction
 from src.mostly.membership_funs.gaussian import MFGaussian
+from src.mostly.membership_funs.generalized_bell import MFGeneralizedBell
 from src.mostly.membership_funs.trapezoid import MFTrapezoid
 from src.mostly.membership_funs.triangle import MFTriangle
 
@@ -81,6 +82,13 @@ def right_trapezoidal_triangular_mf() -> MFTrapezoid:
 def regular_gaussian_mf() -> "MFGaussian":
     """Fixture that returns a standard Gaussian membership function."""
     return MFGaussian(mean=5.0, sigma=1.0, k_sigma=4)
+
+
+# region FIXTURES GENERALIZED BELL MF
+@pytest.fixture
+def regular_generalized_bell_mf() -> "MFGeneralizedBell":
+    """Fixture that returns a standard Generalized Bell membership function."""
+    return MFGeneralizedBell(width=2.0, slope=4.0, center=5.0)
 
 
 # region FIXTURES LINGUISTIC VARIABLE
