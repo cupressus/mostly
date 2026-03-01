@@ -69,8 +69,11 @@ class LinguisticVariable(BaseModel):
             If any membership function returns NaN, or if any point in the UOD has zero membership to all terms.
 
         """
-        # Sample the UOD at regular intervals
-        sample_points = np.linspace(self.uod[0], self.uod[1], num=100)
+        # Sample UOD with adaptive resolution: scale with UOD distance, bounded [50, 1000]
+        # This ensures consistent coverage detection across different UOD scales
+        uod_distance = self.uod[1] - self.uod[0]
+        num_samples = max(50, min(int(np.ceil(uod_distance)) + 1, 1000))
+        sample_points = np.linspace(self.uod[0], self.uod[1], num=num_samples)
         uncovered_points = []
 
         for x in sample_points:

@@ -161,8 +161,8 @@ def test_fuzzify_input_below_uod() -> None:
         concept="temperature",
         uod=(0.0, 100.0),
         fuzzy_sets={
-            "cold": MFTriangle(a=0.0, b=0.0, c=50.0),
-            "hot": MFTriangle(a=50.0, b=100.0, c=100.0),
+            "cold": MFTriangle(a=0.0, b=0.0, c=55.0),
+            "hot": MFTriangle(a=45.0, b=100.0, c=100.0),
         },
     )
 
@@ -179,8 +179,8 @@ def test_fuzzify_input_above_uod() -> None:
         concept="temperature",
         uod=(0.0, 100.0),
         fuzzy_sets={
-            "cold": MFTriangle(a=0.0, b=0.0, c=50.0),
-            "hot": MFTriangle(a=50.0, b=100.0, c=100.0),
+            "cold": MFTriangle(a=0.0, b=0.0, c=55.0),
+            "hot": MFTriangle(a=45.0, b=100.0, c=100.0),
         },
     )
 
