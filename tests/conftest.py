@@ -99,9 +99,9 @@ def simple_linguistic_variable() -> "LinguisticVariable":
         concept="temperature",
         uod=(0.0, 100.0),
         fuzzy_sets={
-            "cold": MFTriangle(a=25.0, b=25.0, c=50.0),
+            "cold": MFTriangle(a=0.0, b=0.0, c=50.0),
             "warm": MFTriangle(a=25.0, b=50.0, c=75.0),
-            "hot": MFTriangle(a=50.0, b=75.0, c=75.0),
+            "hot": MFTriangle(a=50.0, b=100.0, c=100.0),
         },
     )
     return lv
