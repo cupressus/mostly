@@ -1,10 +1,10 @@
 from typing import Annotated
 
+import numpy as np
 from pydantic import AfterValidator, BaseModel, FiniteFloat, StringConstraints, model_validator, validate_call
 
 from .membership_funs.base import MembershipFunction
 
-# force Concept to be snake_case using pydantic AfterValidator
 SnakedStr = Annotated[
     str,
     StringConstraints(strip_whitespace=True, to_lower=True),
@@ -39,16 +39,85 @@ class LinguisticVariable(BaseModel):
     fuzzy_sets: dict[SnakedStr, MembershipFunction]
 
     @model_validator(mode="after")
-    def uod_compliance(self) -> "LinguisticVariable":
-        """Ensure all fuzzy sets are compliant with the Universe of Discourse (UOD)."""
-        uod_min, uod_max = self.uod
-        for term, fs in self.fuzzy_sets.items():
-            fs_uod_min, fs_uod_max = fs.support()
-            if fs_uod_min < uod_min or fs_uod_max > uod_max:
-                raise ValueError(
-                    f"Fuzzy set for term '{term}' has UOD ({fs_uod_min}, {fs_uod_max}) "
-                    f"which is outside the linguistic variable UOD ({uod_min}, {uod_max})."
-                )
+    def validate_uod_bounds(self) -> "LinguisticVariable":
+        """Validate that UOD bounds are properly ordered.
+
+        Raises
+        ------
+        ValueError
+            If the minimum UOD value is greater than or equal to the maximum.
+
+        """
+        if self.uod[0] >= self.uod[1]:
+            raise ValueError(
+                f"Invalid UOD bounds for '{self.concept}': minimum ({self.uod[0]}) "
+                f"must be strictly less than maximum ({self.uod[1]})."
+            )
+        return self
+
+    @model_validator(mode="after")
+    def validate_membership_quality(self) -> "LinguisticVariable":
+        """Validate that membership functions return valid values and provide full UOD coverage.
+
+        Checks that:
+        1. No membership function returns NaN (critical - breaks inference)
+        2. Every point in the UOD has non-zero membership to at least one term (prevents gaps)
+
+        Raises
+        ------
+        ValueError
+            If any membership function returns NaN, or if any point in the UOD has zero membership to all terms.
+
+        """
+        # Sample UOD with adaptive resolution: scale with UOD distance, bounded [50, 1000]
+        # This ensures consistent coverage detection across different UOD scales
+        uod_distance = self.uod[1] - self.uod[0]
+        num_samples = max(50, min(int(np.ceil(uod_distance)) + 1, 1000))
+        sample_points = np.linspace(self.uod[0], self.uod[1], num=num_samples)
+        uncovered_points = []
+
+        for x in sample_points:
+            memberships = []
+            for term, fs in self.fuzzy_sets.items():
+                membership_value = fs(float(x))
+
+                # Priority 1: Check for NaN (critical failure)
+                if np.isnan(membership_value):
+                    raise ValueError(
+                        f"Membership function for term '{term}' in linguistic variable '{self.concept}' "
+                        f"returns NaN at x={x}. This indicates a broken membership function that will "
+                        f"corrupt inference calculations."
+                    )
+
+                memberships.append(membership_value)
+
+            # Priority 2: Check for coverage gaps
+            if max(memberships) == 0.0:
+                uncovered_points.append(x)
+
+        # Report uncovered ranges if any exist
+        if uncovered_points:
+            # Group consecutive points into ranges for clearer error message
+            ranges = []
+            start = uncovered_points[0]
+            prev = uncovered_points[0]
+
+            for point in uncovered_points[1:]:
+                if not np.isclose(point - prev, sample_points[1] - sample_points[0], rtol=1e-9):
+                    # Gap detected, close current range
+                    ranges.append((start, prev))
+                    start = point
+                prev = point
+            ranges.append((start, prev))
+
+            range_strs = [f"[{r[0]:.2f}, {r[1]:.2f}]" for r in ranges]
+            raise ValueError(
+                f"Incomplete coverage in linguistic variable '{self.concept}': "
+                f"the following ranges in the UOD have zero membership to all terms: {', '.join(range_strs)}. "
+                f"Every point in the UOD [{self.uod[0]}, {self.uod[1]}] must have non-zero membership "
+                f"to at least one term."
+            )
+
         return self
 
     @validate_call
@@ -58,7 +127,7 @@ class LinguisticVariable(BaseModel):
         Parameters
         ----------
         x : FiniteFloat
-            The input value to be fuzzified.
+            The input value to be fuzzified. Must be within the UOD bounds.
 
         Returns
         -------
@@ -66,7 +135,19 @@ class LinguisticVariable(BaseModel):
             A dictionary where the keys are terms and the values are their degrees of membership.
             For instance `{'cold': 0.8, 'medium': 0.2, 'warm': 0.0}`
 
+        Raises
+        ------
+        ValueError
+            If the input value is outside the UOD bounds.
+
         """
+        # Validate input is within UOD bounds
+        if not (self.uod[0] <= x <= self.uod[1]):
+            raise ValueError(
+                f"Input value {x} is outside the UOD bounds [{self.uod[0]}, {self.uod[1]}] "
+                f"for linguistic variable '{self.concept}'."
+            )
+
         return {term: fs(x) for term, fs in self.fuzzy_sets.items()}
 
     def get_fuzzy_set(self, term: SnakedStr) -> MembershipFunction:

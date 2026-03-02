@@ -23,7 +23,6 @@ def test_regular_membership(regular_trapezoidal_mf: MFTrapezoid, input, expected
     """Test Regular Trapezoidal Membership Function."""
     assert regular_trapezoidal_mf.shape == "regular"
     assert regular_trapezoidal_mf(input) == expected
-    assert regular_trapezoidal_mf.support() == (0, 10)
 
 
 @pytest.mark.parametrize(
@@ -40,7 +39,6 @@ def test_left_shoulder_membership(left_trapezoidal_triangular_mf: MFTrapezoid, i
     """Test Shoulder Triangle Membership Function."""
     assert left_trapezoidal_triangular_mf.shape == "left"
     assert left_trapezoidal_triangular_mf(input) == expected
-    assert left_trapezoidal_triangular_mf.support() == (0, 10)
 
 
 @pytest.mark.parametrize(
@@ -58,7 +56,6 @@ def test_right_shoulder_membership(right_trapezoidal_triangular_mf: MFTrapezoid,
     """Test Shoulder Triangle Membership Function."""
     assert right_trapezoidal_triangular_mf.shape == "right"
     assert right_trapezoidal_triangular_mf(input) == expected
-    assert right_trapezoidal_triangular_mf.support() == (0, 10)
 
 
 # region NEGATIVE TESTS

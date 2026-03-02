@@ -26,8 +26,6 @@ class MFTriangle(MembershipFunction):
     -------
     __call__
         Calculates the degree of membership for the input `x`.
-    support()
-        Returns the interval `[a, c]` where the membership function is nonzero.
 
     Raises
     ------
@@ -73,7 +71,3 @@ class MFTriangle(MembershipFunction):
                 return max(min((x - self.a) / (self.c - self.a), 1), 0)
             case _:  # pragma: no cover
                 raise RuntimeError(f"Unexpected triangle shape: {self.shape}")
-
-    def support(self) -> tuple[FiniteFloat, FiniteFloat]:
-        """Provide 0 Cutoffs."""
-        return self.a, self.c
