@@ -3,6 +3,7 @@ import pytest
 
 from src.mostly.linguistic_variable import LinguisticVariable
 from src.mostly.membership_funs.triangle import MFTriangle
+from src.mostly.plotting.altair.plot_fuzzy_set import plot_fuzzy_set
 from src.mostly.plotting.altair.plot_linguistic_variable import plot_linguistic_variable
 
 # region POSITIVE TESTS
@@ -53,6 +54,18 @@ def test_plotting(simple_linguistic_variable: LinguisticVariable) -> None:
     chart = plot_linguistic_variable(simple_linguistic_variable)
     assert chart is not None
     assert isinstance(chart, (alt.Chart, alt.LayerChart))
+
+
+def test_plot_single_fuzzy_set(simple_linguistic_variable: LinguisticVariable) -> None:
+    """Test that plotting a single fuzzy set returns an Altair chart."""
+    chart = plot_fuzzy_set(
+        term="cold",
+        mf=simple_linguistic_variable.get_fuzzy_set("cold"),
+        uod=simple_linguistic_variable.uod,
+    )
+
+    assert chart is not None
+    assert isinstance(chart, alt.Chart)
 
 
 # region NEGATIVE TESTS - VALIDATION
