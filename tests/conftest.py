@@ -2,6 +2,7 @@ import pytest
 
 from src.mostly.linguistic_variable import LinguisticVariable
 from src.mostly.membership_funs.base import MembershipFunction
+from src.mostly.membership_funs.bimodal_gaussian import MFBimodalGaussian
 from src.mostly.membership_funs.gaussian import MFGaussian
 from src.mostly.membership_funs.generalized_bell import MFGeneralizedBell
 from src.mostly.membership_funs.trapezoid import MFTrapezoid
@@ -81,7 +82,20 @@ def right_trapezoidal_triangular_mf() -> MFTrapezoid:
 @pytest.fixture
 def regular_gaussian_mf() -> "MFGaussian":
     """Fixture that returns a standard Gaussian membership function."""
-    return MFGaussian(mean=5.0, sigma=1.0, k_sigma=4)
+    return MFGaussian(mean=5.0, sigma=1.0)
+
+
+# region FIXTURES BIMODAL GAUSSIAN MF
+@pytest.fixture
+def regular_bimodal_gaussian_mf() -> "MFBimodalGaussian":
+    """Fixture that returns a bimodal Gaussian with ordered means (plateau case)."""
+    return MFBimodalGaussian(left_mean=3.0, left_sigma=1.0, right_mean=7.0, right_sigma=1.0)
+
+
+@pytest.fixture
+def inverted_bimodal_gaussian_mf() -> "MFBimodalGaussian":
+    """Fixture that returns a bimodal Gaussian with inverted means (product case)."""
+    return MFBimodalGaussian(left_mean=7.0, left_sigma=1.0, right_mean=3.0, right_sigma=1.0)
 
 
 # region FIXTURES GENERALIZED BELL MF
