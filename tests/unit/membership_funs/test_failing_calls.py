@@ -9,6 +9,7 @@ from pydantic import ValidationError
         "regular_triangular_mf",
         "triangular_trapezoidal_mf",
         "regular_gaussian_mf",
+        "regular_bimodal_gaussian_mf",
     ],
 )
 @pytest.mark.parametrize(
