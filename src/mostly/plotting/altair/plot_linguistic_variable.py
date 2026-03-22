@@ -3,6 +3,7 @@ import numpy as np
 import pandas as pd
 
 from src.mostly.linguistic_variable import LinguisticVariable
+from src.mostly.plotting.altair.plot_fuzzy_set import plot_fuzzy_set
 
 
 def plot_linguistic_variable(
@@ -18,33 +19,11 @@ def plot_linguistic_variable(
         highlight: Optional. A value to highlight on the plot, showing its degree of membership in each fuzzy set.
 
     """
-    x_vals = np.linspace(*lv.uod, resolution)
-    plot_data = []
-
-    for term, mf in lv.fuzzy_sets.items():
-        y_vals = [mf(x) for x in x_vals]
-        plot_data.extend(
-            {
-                "x": x,
-                "membership": y,
-                "term": term,
-            }
-            for x, y in zip(x_vals, y_vals, strict=True)
-        )
-
-    chart = (
-        alt.Chart(pd.DataFrame(plot_data))
-        .mark_line()
-        .encode(
-            x=alt.X("x:Q", title=f"UoD: [{', '.join(map(str, lv.uod))}]"),
-            y=alt.Y("membership:Q", title="Degree of Membership"),
-            color="term:N",
-        )
-        .properties(
-            title=alt.Title(
-                f'Fuzzy Sets of Linguistic Variable "{str.capitalize(lv.concept)}"',
-                subtitle=f"Input: {float(highlight)}" if highlight else "",
-            )
+    charts = [plot_fuzzy_set(term, mf, lv.uod, resolution) for term, mf in lv.fuzzy_sets.items()]
+    chart = alt.layer(*charts).properties(
+        title=alt.Title(
+            f'Fuzzy Sets of Linguistic Variable "{str.capitalize(lv.concept)}"',
+            subtitle=f"Input: {float(highlight)}" if highlight else "",
         )
     )
 
