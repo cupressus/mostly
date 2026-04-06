@@ -2,7 +2,7 @@ import altair as alt
 import numpy as np
 import pandas as pd
 
-from src.mostly.membership_funs.base import MembershipFunction
+from ...membership_functions.base import MembershipFunction
 
 
 def plot_fuzzy_set(

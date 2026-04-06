@@ -1,7 +1,7 @@
 import altair as alt
 import pandas as pd
 
-from src.mostly.inference.mamdani import MamdaniFIS
+from ...inference.mamdani import MamdaniFIS
 
 
 def plot_inference_outputs(
