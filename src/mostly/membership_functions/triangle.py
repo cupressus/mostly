@@ -2,10 +2,10 @@ from typing import Literal
 
 from pydantic import Field, FiniteFloat, computed_field, model_validator, validate_call
 
-from src.mostly.membership_funs.base import MembershipFunction
+from .base import MembershipFunction
 
 
-class MFTriangle(MembershipFunction):
+class MFTriangular(MembershipFunction):
     """Triangular Membership Function.
 
     This class represents a triangular membership function, commonly used in fuzzy logic systems.
@@ -39,7 +39,7 @@ class MFTriangle(MembershipFunction):
     c: FiniteFloat = Field(description="The Right Foot of a Triangle")
 
     @model_validator(mode="after")
-    def compliance(self) -> "MFTriangle":
+    def compliance(self) -> "MFTriangular":
         """Validate model for correct Triangle."""
         if self.a > self.b or self.b > self.c:
             raise ValueError("Triangle points must satisfy a ≤ b ≤ c")

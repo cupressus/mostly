@@ -2,7 +2,7 @@ import altair as alt
 import pytest
 
 from src.mostly.linguistic_variable import LinguisticVariable
-from src.mostly.membership_funs.triangle import MFTriangle
+from src.mostly.membership_functions.triangle import MFTriangular
 from src.mostly.plotting.altair.plot_fuzzy_set import plot_fuzzy_set
 from src.mostly.plotting.altair.plot_linguistic_variable import plot_linguistic_variable
 
@@ -34,9 +34,9 @@ def test_get_fuzzy_set(simple_linguistic_variable: LinguisticVariable) -> None:
     warm_fs = simple_linguistic_variable.get_fuzzy_set("warm")
     hot_fs = simple_linguistic_variable.get_fuzzy_set("hot")
 
-    assert isinstance(cold_fs, MFTriangle)
-    assert isinstance(warm_fs, MFTriangle)
-    assert isinstance(hot_fs, MFTriangle)
+    assert isinstance(cold_fs, MFTriangular)
+    assert isinstance(warm_fs, MFTriangular)
+    assert isinstance(hot_fs, MFTriangular)
 
 
 def test_get_fuzzy_set_invalid_term(simple_linguistic_variable: LinguisticVariable) -> None:
@@ -78,8 +78,8 @@ def test_invalid_uod_inverted_bounds() -> None:
             concept="temperature",
             uod=(100.0, 0.0),
             fuzzy_sets={
-                "cold": MFTriangle(a=0.0, b=0.0, c=50.0),
-                "hot": MFTriangle(a=50.0, b=100.0, c=100.0),
+                "cold": MFTriangular(a=0.0, b=0.0, c=50.0),
+                "hot": MFTriangular(a=50.0, b=100.0, c=100.0),
             },
         )
 
@@ -95,7 +95,7 @@ def test_invalid_uod_equal_bounds() -> None:
             concept="temperature",
             uod=(50.0, 50.0),
             fuzzy_sets={
-                "medium": MFTriangle(a=25.0, b=50.0, c=75.0),
+                "medium": MFTriangular(a=25.0, b=50.0, c=75.0),
             },
         )
 
@@ -112,9 +112,9 @@ def test_incomplete_coverage_gap_at_boundaries() -> None:
             uod=(0.0, 100.0),
             fuzzy_sets={
                 # Using regular triangles (not shoulders) to create gaps
-                "cold": MFTriangle(a=20.0, b=30.0, c=40.0),  # Gap at [0, 20)
-                "warm": MFTriangle(a=30.0, b=50.0, c=70.0),
-                "hot": MFTriangle(a=60.0, b=75.0, c=85.0),  # Gap at (85, 100]
+                "cold": MFTriangular(a=20.0, b=30.0, c=40.0),  # Gap at [0, 20)
+                "warm": MFTriangular(a=30.0, b=50.0, c=70.0),
+                "hot": MFTriangular(a=60.0, b=75.0, c=85.0),  # Gap at (85, 100]
             },
         )
 
@@ -130,9 +130,9 @@ def test_incomplete_coverage_gap_in_middle() -> None:
             concept="temperature",
             uod=(0.0, 100.0),
             fuzzy_sets={
-                "cold": MFTriangle(a=0.0, b=0.0, c=30.0),
+                "cold": MFTriangular(a=0.0, b=0.0, c=30.0),
                 # Gap between 30 and 60
-                "hot": MFTriangle(a=60.0, b=100.0, c=100.0),
+                "hot": MFTriangular(a=60.0, b=100.0, c=100.0),
             },
         )
 
@@ -141,7 +141,7 @@ def test_incomplete_coverage_gap_in_middle() -> None:
     assert "temperature" in str(err)
 
 
-class BrokenMF(MFTriangle):
+class BrokenMF(MFTriangular):
     """A broken membership function that returns NaN."""
 
     def __call__(self, x: float) -> float:
@@ -156,9 +156,9 @@ def test_nan_membership_detected() -> None:
             concept="temperature",
             uod=(0.0, 100.0),
             fuzzy_sets={
-                "cold": MFTriangle(a=0.0, b=0.0, c=50.0),
+                "cold": MFTriangular(a=0.0, b=0.0, c=50.0),
                 "broken": BrokenMF(a=25.0, b=50.0, c=75.0),
-                "hot": MFTriangle(a=50.0, b=100.0, c=100.0),
+                "hot": MFTriangular(a=50.0, b=100.0, c=100.0),
             },
         )
 
@@ -174,8 +174,8 @@ def test_fuzzify_input_below_uod() -> None:
         concept="temperature",
         uod=(0.0, 100.0),
         fuzzy_sets={
-            "cold": MFTriangle(a=0.0, b=0.0, c=55.0),
-            "hot": MFTriangle(a=45.0, b=100.0, c=100.0),
+            "cold": MFTriangular(a=0.0, b=0.0, c=55.0),
+            "hot": MFTriangular(a=45.0, b=100.0, c=100.0),
         },
     )
 
@@ -192,8 +192,8 @@ def test_fuzzify_input_above_uod() -> None:
         concept="temperature",
         uod=(0.0, 100.0),
         fuzzy_sets={
-            "cold": MFTriangle(a=0.0, b=0.0, c=55.0),
-            "hot": MFTriangle(a=45.0, b=100.0, c=100.0),
+            "cold": MFTriangular(a=0.0, b=0.0, c=55.0),
+            "hot": MFTriangular(a=45.0, b=100.0, c=100.0),
         },
     )
 
@@ -211,9 +211,9 @@ def test_valid_complete_coverage() -> None:
         concept="speed",
         uod=(0.0, 120.0),
         fuzzy_sets={
-            "slow": MFTriangle(a=0.0, b=0.0, c=60.0),
-            "medium": MFTriangle(a=30.0, b=60.0, c=90.0),
-            "fast": MFTriangle(a=60.0, b=120.0, c=120.0),
+            "slow": MFTriangular(a=0.0, b=0.0, c=60.0),
+            "medium": MFTriangular(a=30.0, b=60.0, c=90.0),
+            "fast": MFTriangular(a=60.0, b=120.0, c=120.0),
         },
     )
 

@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from src.mostly.membership_funs.base import MembershipFunction
+from src.mostly.membership_functions.base import MembershipFunction
 
 
 def test_cannot_instantiate_abstract_membership_function():
@@ -21,12 +21,6 @@ def test_concrete_subclass_implements_interface(dummy_mf):
     assert isinstance(val, float)
     assert math.isfinite(val)
     assert val == pytest.approx(1.5)
-
-    # support returns a length-2 tuple of finite floats with ordered bounds
-    left, right = dummy_mf.support()
-    assert isinstance(left, float) and isinstance(right, float)
-    assert math.isfinite(left) and math.isfinite(right)
-    assert left < right
 
 
 def test_support_and_call_contract_consistency(dummy_mf):

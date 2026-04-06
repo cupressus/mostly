@@ -1,7 +1,7 @@
 import altair as alt
 
-from src.mostly.inference.mamdani import MamdaniFIS
-from src.mostly.plotting.altair.plot_linguistic_variable import plot_linguistic_variable
+from ...inference.mamdani import MamdaniFIS
+from .plot_linguistic_variable import plot_linguistic_variable
 
 
 def plot_inference_inputs(

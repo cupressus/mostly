@@ -4,7 +4,7 @@ from src.mostly.fuzzy_rules.fuzzy_rule import FuzzyRule
 from src.mostly.fuzzy_rules.logical_operators import Is, Or
 from src.mostly.inference.mamdani import MamdaniFIS
 from src.mostly.linguistic_variable import LinguisticVariable
-from src.mostly.membership_funs.triangle import MFTriangle
+from src.mostly.membership_functions.triangle import MFTriangular
 from src.mostly.plotting.altair.plot_fis_inputs import plot_inference_inputs
 from src.mostly.plotting.altair.plot_fis_outputs import plot_inference_outputs
 from src.mostly.plotting.altair.themes import mostly_light  # noqa: F401
@@ -13,9 +13,9 @@ service = LinguisticVariable(
     concept="service_quality",
     uod=(0.0, 10.0),
     fuzzy_sets={
-        "poor": MFTriangle(a=0.0, b=0.0, c=5.0),
-        "good": MFTriangle(a=0.0, b=5.0, c=10.0),
-        "excellent": MFTriangle(a=5.0, b=10.0, c=10.0),
+        "poor": MFTriangular(a=0.0, b=0.0, c=5.0),
+        "good": MFTriangular(a=0.0, b=5.0, c=10.0),
+        "excellent": MFTriangular(a=5.0, b=10.0, c=10.0),
     },
 )
 
@@ -23,9 +23,9 @@ quality = LinguisticVariable(
     concept="food_quality",
     uod=(0.0, 10.0),
     fuzzy_sets={
-        "poor": MFTriangle(a=0.0, b=0.0, c=5.0),
-        "good": MFTriangle(a=0.0, b=5.0, c=10.0),
-        "excellent": MFTriangle(a=5.0, b=10.0, c=10.0),
+        "poor": MFTriangular(a=0.0, b=0.0, c=5.0),
+        "good": MFTriangular(a=0.0, b=5.0, c=10.0),
+        "excellent": MFTriangular(a=5.0, b=10.0, c=10.0),
     },
 )
 
@@ -33,9 +33,9 @@ tip = LinguisticVariable(
     concept="tip_amount",
     uod=(0.0, 25.0),
     fuzzy_sets={
-        "low": MFTriangle(a=0.0, b=0.0, c=13.0),
-        "medium": MFTriangle(a=0.0, b=13.0, c=25.0),
-        "high": MFTriangle(a=13.0, b=25.0, c=25.0),
+        "low": MFTriangular(a=0.0, b=0.0, c=13.0),
+        "medium": MFTriangular(a=0.0, b=13.0, c=25.0),
+        "high": MFTriangular(a=13.0, b=25.0, c=25.0),
     },
 )
 

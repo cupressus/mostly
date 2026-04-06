@@ -2,8 +2,8 @@ import altair as alt
 import numpy as np
 import pandas as pd
 
-from src.mostly.linguistic_variable import LinguisticVariable
-from src.mostly.plotting.altair.plot_fuzzy_set import plot_fuzzy_set
+from ...linguistic_variable import LinguisticVariable
+from .plot_fuzzy_set import plot_fuzzy_set
 
 
 def plot_linguistic_variable(

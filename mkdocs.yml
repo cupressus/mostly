@@ -34,10 +34,16 @@ extra:
     - icon: fontawesome/brands/linkedin
       link: https://www.linkedin.com/in/mmeyer-analyst/
 
+plugins:
+  - mkdocs-jupyter:
+        include: ["*.ipynb"]
+        execute: False
+
 nav:
-  - Home: index.md
+  - Introduction: index.md
+  - Tutorials: 
+    - Membership functions: mf.ipynb
   #- Changelog: changelog.md
-  #- Tutorials: tutorials.md
   #- How-To Guides: how_to_guide.md
   #- Reference: api_reference.md
   #- Explanation: changelog.md
