@@ -2,10 +2,10 @@ from typing import Literal
 
 from pydantic import Field, FiniteFloat, computed_field, model_validator, validate_call
 
-from src.mostly.membership_funs.base import MembershipFunction
+from .base import MembershipFunction
 
 
-class MFTrapezoid(MembershipFunction):
+class MFTrapezoidal(MembershipFunction):
     """Trapezoidal Membership Function.
 
     A fuzzy membership function defined by four points (`a`, `b`, `c`, `d`) forming a trapezoidal shape.
@@ -40,7 +40,7 @@ class MFTrapezoid(MembershipFunction):
     d: FiniteFloat = Field(description="The Right Foot of the Trapezoid")
 
     @model_validator(mode="after")
-    def compliance(self) -> "MFTrapezoid":
+    def compliance(self) -> "MFTrapezoidal":
         """Validate model for correct Trapezoid."""
         if self.a > self.b or self.c > self.d or self.b > self.c:
             raise ValueError("Trapezoid points must satisfy a ≤ b ≤ c ≤ d")

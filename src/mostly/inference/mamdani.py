@@ -5,7 +5,7 @@ from pydantic import BaseModel, ConfigDict, Field, FiniteFloat, validate_call
 
 from ..fuzzy_rules.fuzzy_rule import FuzzyRule
 from ..linguistic_variable import LinguisticVariable
-from ..membership_funs.base import MembershipFunction
+from ..membership_functions import MembershipFunction
 
 
 class InferenceConfig(BaseModel):

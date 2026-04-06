@@ -1,12 +1,12 @@
 import pytest
 
 from src.mostly.linguistic_variable import LinguisticVariable
-from src.mostly.membership_funs.base import MembershipFunction
-from src.mostly.membership_funs.bimodal_gaussian import MFBimodalGaussian
-from src.mostly.membership_funs.gaussian import MFGaussian
-from src.mostly.membership_funs.generalized_bell import MFGeneralizedBell
-from src.mostly.membership_funs.trapezoid import MFTrapezoid
-from src.mostly.membership_funs.triangle import MFTriangle
+from src.mostly.membership_functions.base import MembershipFunction
+from src.mostly.membership_functions.bimodal_gaussian import MFBimodalGaussian
+from src.mostly.membership_functions.gaussian import MFGaussian
+from src.mostly.membership_functions.generalized_bell import MFGeneralizedBell
+from src.mostly.membership_functions.trapezoidal import MFTrapezoidal
+from src.mostly.membership_functions.triangle import MFTriangular
 
 
 # region FIXTURES BASE MF
@@ -34,48 +34,48 @@ def dummy_mf() -> DummyMF:
 
 
 @pytest.fixture
-def regular_triangular_mf() -> MFTriangle:
+def regular_triangular_mf() -> MFTriangular:
     """Fixture that returns a regular triangular membership function."""
-    return MFTriangle(a=0, b=5, c=10)
+    return MFTriangular(a=0, b=5, c=10)
 
 
 @pytest.fixture
-def left_triangular_mf() -> MFTriangle:
+def left_triangular_mf() -> MFTriangular:
     """Fixture that returns a left-shoulder triangular membership function."""
-    return MFTriangle(a=0, b=0, c=10)
+    return MFTriangular(a=0, b=0, c=10)
 
 
 @pytest.fixture
-def right_triangular_mf() -> MFTriangle:
+def right_triangular_mf() -> MFTriangular:
     """Fixture that returns a right-shoulder triangular membership function."""
-    return MFTriangle(a=0, b=10, c=10)
+    return MFTriangular(a=0, b=10, c=10)
 
 
 # region FIXTURES TRAPEZOIDAL MF
 
 
 @pytest.fixture
-def regular_trapezoidal_mf() -> MFTrapezoid:
+def regular_trapezoidal_mf() -> MFTrapezoidal:
     """Fixture that returns a regular trapezoidal membership function."""
-    return MFTrapezoid(a=0, b=4, c=6, d=10)
+    return MFTrapezoidal(a=0, b=4, c=6, d=10)
 
 
 @pytest.fixture
-def triangular_trapezoidal_mf() -> MFTrapezoid:
+def triangular_trapezoidal_mf() -> MFTrapezoidal:
     """Fixture that returns a trapezoidal membership function forced to be triangular."""
-    return MFTrapezoid(a=0, b=5, c=5, d=10)
+    return MFTrapezoidal(a=0, b=5, c=5, d=10)
 
 
 @pytest.fixture
-def left_trapezoidal_triangular_mf() -> MFTrapezoid:
+def left_trapezoidal_triangular_mf() -> MFTrapezoidal:
     """Fixture that returns a left-shoulder trapezoidal membership function forced to be triangular."""
-    return MFTrapezoid(a=0, b=0, c=0, d=10)
+    return MFTrapezoidal(a=0, b=0, c=0, d=10)
 
 
 @pytest.fixture
-def right_trapezoidal_triangular_mf() -> MFTrapezoid:
+def right_trapezoidal_triangular_mf() -> MFTrapezoidal:
     """Fixture that returns a right-shoulder trapezoidal membership function forced to be triangular."""
-    return MFTrapezoid(a=0, b=10, c=10, d=10)
+    return MFTrapezoidal(a=0, b=10, c=10, d=10)
 
 
 # region FIXTURES GAUSSIAN MF
@@ -113,9 +113,9 @@ def simple_linguistic_variable() -> "LinguisticVariable":
         concept="temperature",
         uod=(0.0, 100.0),
         fuzzy_sets={
-            "cold": MFTriangle(a=0.0, b=0.0, c=50.0),
-            "warm": MFTriangle(a=25.0, b=50.0, c=75.0),
-            "hot": MFTriangle(a=50.0, b=100.0, c=100.0),
+            "cold": MFTriangular(a=0.0, b=0.0, c=50.0),
+            "warm": MFTriangular(a=25.0, b=50.0, c=75.0),
+            "hot": MFTriangular(a=50.0, b=100.0, c=100.0),
         },
     )
     return lv

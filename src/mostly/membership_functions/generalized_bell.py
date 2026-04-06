@@ -1,6 +1,6 @@
 from pydantic import Field, FiniteFloat, validate_call
 
-from src.mostly.membership_funs.base import MembershipFunction
+from .base import MembershipFunction
 
 
 class MFGeneralizedBell(MembershipFunction):

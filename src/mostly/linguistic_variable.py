@@ -3,7 +3,7 @@ from typing import Annotated
 import numpy as np
 from pydantic import AfterValidator, BaseModel, FiniteFloat, StringConstraints, model_validator, validate_call
 
-from .membership_funs.base import MembershipFunction
+from .membership_functions import MembershipFunction
 
 SnakedStr = Annotated[
     str,

@@ -1,6 +1,6 @@
 import pytest
 
-from src.mostly.membership_funs.generalized_bell import MFGeneralizedBell
+from src.mostly.membership_functions.generalized_bell import MFGeneralizedBell
 
 # region POSITIVE TESTS
 
@@ -15,8 +15,6 @@ from src.mostly.membership_funs.generalized_bell import MFGeneralizedBell
         pytest.param(1, 1 / 257, id="far left"),
     ],
 )
-def test_regular_generalized_bell(
-    regular_generalized_bell_mf: MFGeneralizedBell, input, expected
-) -> None:
+def test_regular_generalized_bell(regular_generalized_bell_mf: MFGeneralizedBell, input, expected) -> None:
     """Test Standard Generalized Bell Membership Function."""
     assert regular_generalized_bell_mf(input) == pytest.approx(expected, rel=1e-3)

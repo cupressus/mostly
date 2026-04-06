@@ -1,7 +1,7 @@
 import pytest
 
-from src.mostly.membership_funs.trapezoid import MFTrapezoid
-from src.mostly.membership_funs.triangle import MFTriangle
+from src.mostly.membership_functions.trapezoidal import MFTrapezoidal
+from src.mostly.membership_functions.triangle import MFTriangular
 
 # region POSITIVE TESTS
 
@@ -19,7 +19,7 @@ from src.mostly.membership_funs.triangle import MFTriangle
     ],
 )
 def test_regular_membership(
-    regular_triangular_mf: MFTriangle, triangular_trapezoidal_mf: MFTrapezoid, input, expected
+    regular_triangular_mf: MFTriangular, triangular_trapezoidal_mf: MFTrapezoidal, input, expected
 ) -> None:
     """Test Regular Triangle and Trapezoidal Triangle Membership Function."""
     assert regular_triangular_mf.shape == "regular"
@@ -38,7 +38,7 @@ def test_regular_membership(
         pytest.param(15, 0, id="left - oob"),
     ],
 )
-def test_left_shoulder_membership(left_triangular_mf: MFTriangle, input: float, expected: float) -> None:
+def test_left_shoulder_membership(left_triangular_mf: MFTriangular, input: float, expected: float) -> None:
     """Test Shoulder Triangle Membership Function."""
     assert left_triangular_mf.shape == "left"
     assert left_triangular_mf(input) == expected
@@ -55,7 +55,7 @@ def test_left_shoulder_membership(left_triangular_mf: MFTriangle, input: float, 
         pytest.param(15, 1, id="right - oob"),
     ],
 )
-def test_right_shoulder_membership(right_triangular_mf: MFTriangle, input: float, expected: float) -> None:
+def test_right_shoulder_membership(right_triangular_mf: MFTriangular, input: float, expected: float) -> None:
     """Test Shoulder Triangle Membership Function."""
     assert right_triangular_mf.shape == "right"
     assert right_triangular_mf(input) == expected
@@ -67,10 +67,10 @@ def test_right_shoulder_membership(right_triangular_mf: MFTriangle, input: float
 def test_compliance_validation() -> None:
     """Test compliance method for invalid triangle configuration."""
     with pytest.raises(ValueError, match="Triangle points must satisfy a ≤ b ≤ c"):
-        MFTriangle(a=2.0, b=1.0, c=3.0)  # Invalid: a > b
+        MFTriangular(a=2.0, b=1.0, c=3.0)  # Invalid: a > b
     with pytest.raises(ValueError, match="Triangle points must satisfy a ≤ b ≤ c"):
-        MFTriangle(a=1.0, b=3.0, c=2.0)  # Invalid: b > c
+        MFTriangular(a=1.0, b=3.0, c=2.0)  # Invalid: b > c
     with pytest.raises(ValueError, match="Triangle points must satisfy a ≤ b ≤ c"):
-        MFTriangle(a=2.0, b=3.0, c=1.0)  # Invalid: b > c
+        MFTriangular(a=2.0, b=3.0, c=1.0)  # Invalid: b > c
     with pytest.raises(ValueError, match="All points a, b, c cannot be equal; not a valid triangle"):
-        MFTriangle(a=0.0, b=0.0, c=0.0)  # All Equal
+        MFTriangular(a=0.0, b=0.0, c=0.0)  # All Equal

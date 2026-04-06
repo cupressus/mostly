@@ -1,6 +1,6 @@
 import pytest
 
-from src.mostly.membership_funs.gaussian import MFGaussian
+from src.mostly.membership_functions.gaussian import MFGaussian
 
 # region POSITIVE TESTS
 
