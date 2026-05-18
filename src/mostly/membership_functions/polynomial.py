@@ -36,25 +36,25 @@ class MFPolynomial(MembershipFunction):
         """Calculate degree of Membership for a given input `x`."""
         if self.variant == "left_open":
             match x:
-                case x if x <= self.foot:
+                case x if x <= self.shoulder:
                     return 1.0
-                case x if x >= self.shoulder:
-                    return 0.0
                 case x if self.shoulder <= x <= (self.foot + self.shoulder) / 2:
-                    return 1 - 2 * ((x - self.foot) / (self.foot - self.shoulder)) ** 2
-                case x if (self.foot + self.shoulder) / 2 <= x <= self.shoulder:
+                    return 1 - 2 * ((x - self.shoulder) / (self.foot - self.shoulder)) ** 2
+                case x if (self.shoulder + self.foot) / 2 <= x <= self.foot:
                     return 2 * ((x - self.foot) / (self.foot - self.shoulder)) ** 2
+                case x if x >= self.foot:
+                    return 0.0
                 case _:
                     return 0.0
         else:
             match x:
                 case x if x <= self.foot:
                     return 0.0
-                case x if x >= self.shoulder:
-                    return 1.0
                 case x if self.foot <= x <= (self.foot + self.shoulder) / 2:
                     return 2 * ((x - self.foot) / (self.shoulder - self.foot)) ** 2
                 case x if (self.foot + self.shoulder) / 2 <= x <= self.shoulder:
                     return 1 - 2 * ((x - self.shoulder) / (self.shoulder - self.foot)) ** 2
+                case x if x >= self.shoulder:
+                    return 1.0
                 case _:
                     return 0.0
