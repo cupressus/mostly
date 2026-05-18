@@ -1,19 +1,19 @@
 from pydantic import FiniteFloat, model_validator, validate_call
 
 from .base import MembershipFunction
-from .polynomial import MFPolynomial
+from .polynomial import MFPolynomialS, MFPolynomialZ
 
 
-class MFCombinedPolynomial(MembershipFunction):
+class MFPolynomialCombined(MembershipFunction):
     """Combined Polynomial Membership Function.
 
     A fuzzy membership function defined by the combination of two polynomials.
 
     Parameters
     ----------
-    left : MFPolynomial
+    left : MFPolynomialS
         The left polynomial, which must be of the 'right_open' variant.
-    right : MFPolynomial
+    right : MFPolynomialZ
         The right polynomial, which must be of the 'left_open' variant.
 
     Methods
@@ -23,17 +23,13 @@ class MFCombinedPolynomial(MembershipFunction):
 
     """
 
-    left: MFPolynomial
-    right: MFPolynomial
+    left: MFPolynomialS
+    right: MFPolynomialZ
 
     @model_validator(mode="after")
-    def compliance(self) -> "MFCombinedPolynomial":
+    def compliance(self) -> "MFPolynomialCombined":
         """Validate model for correct Combined Polynomial."""
-        if self.left.variant != "right_open":
-            raise ValueError("Left polynomial must be of 'right_open' variant")
-        if self.right.variant != "left_open":
-            raise ValueError("Right polynomial must be of 'left_open' variant")
-        if self.left.shoulder >= self.right.shoulder:
+        if self.left.shoulder > self.right.shoulder:
             raise ValueError("Left shoulder must be less than right shoulder")
         return self
 

@@ -2,10 +2,10 @@
 
 from .base import MembershipFunction
 from .bimodal_gaussian import MFBimodalGaussian
-from .combined_polynominal import MFCombinedPolynomial
 from .gaussian import MFGaussian
 from .generalized_bell import MFGeneralizedBell
-from .polynomial import MFPolynomial
+from .polynomial import MFPolynomialS, MFPolynomialZ
+from .polynomial_combined import MFPolynomialCombined
 from .trapezoidal import MFTrapezoidal
 from .triangle import MFTriangular
 
@@ -16,6 +16,7 @@ __all__ = [
     "MFTrapezoidal",
     "MFTriangular",
     "MembershipFunction",
-    "MFPolynomial",
-    "MFCombinedPolynomial",
+    "MFPolynomialZ",
+    "MFPolynomialS",
+    "MFPolynomialCombined",
 ]
