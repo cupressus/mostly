@@ -1,6 +1,6 @@
 from typing import Literal
 
-from pydantic import FiniteFloat, validate_call
+from pydantic import FiniteFloat, model_validator, validate_call
 
 from .base import MembershipFunction
 
@@ -30,6 +30,15 @@ class MFPolynomial(MembershipFunction):
     variant: Literal["left_open", "right_open"]
     shoulder: FiniteFloat
     foot: FiniteFloat
+
+    @model_validator(mode="after")
+    def compliance(self) -> "MFPolynomial":
+        """Validate model for correct Polynomial."""
+        if self.variant == "left_open" and self.shoulder >= self.foot:
+            raise ValueError("For 'left_open' variant, shoulder must be less than foot")
+        if self.variant == "right_open" and self.foot >= self.shoulder:
+            raise ValueError("For 'right_open' variant, foot must be less than shoulder")
+        return self
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
