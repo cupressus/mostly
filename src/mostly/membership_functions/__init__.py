@@ -2,6 +2,7 @@
 
 from .base import MembershipFunction
 from .bimodal_gaussian import MFBimodalGaussian
+from .crisp import MFCrisp
 from .gaussian import MFGaussian
 from .generalized_bell import MFGeneralizedBell
 from .polynomial import MFPolynomialS, MFPolynomialZ
@@ -23,4 +24,5 @@ __all__ = [
     "MFPolynomialCombined",
     "MFSigmoidal",
     "MFSigmoidalCombined",
+    "MFCrisp",
 ]
