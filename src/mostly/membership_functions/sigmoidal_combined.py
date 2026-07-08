@@ -36,6 +36,6 @@ class MFSigmoidalCombined(MembershipFunction):
         if self.method == "diff":
             return mf1(x) - mf2(x)
         elif self.method == "multiply":
-            return mf1(x) * mf2(x)
+            return mf1(x) * mf2(x)  # pyright: ignore[reportOperatorIssue]
         else:
             raise ValueError("Invalid method. Use 'diff' or 'multiply'.")
