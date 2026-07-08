@@ -28,8 +28,8 @@ class MFCrisp(MembershipFunction):
 
     left: FiniteFloat
     right: FiniteFloat
-    include_left: bool = Field(default=True)
-    include_right: bool = Field(default=False)
+    include_left: bool = Field(default=False)
+    include_right: bool = Field(default=True)
 
     @model_validator(mode="after")
     def compliance(self) -> "MFCrisp":
@@ -39,9 +39,7 @@ class MFCrisp(MembershipFunction):
 
         # Degenerate interval [x, x] is only valid when both bounds are inclusive.
         if self.left == self.right and not (self.include_left and self.include_right):
-            raise ValueError(
-                "When left == right, both include_left and include_right must be True"
-            )
+            raise ValueError("When left == right, both include_left and include_right must be True")
 
         return self
 
