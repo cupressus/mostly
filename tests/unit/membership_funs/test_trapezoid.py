@@ -1,6 +1,6 @@
 import pytest
 
-from src.mostly.membership_functions.trapezoidal import MFTrapezoidal
+from mostly.membership_functions.trapezoidal import MFTrapezoidal
 
 # region POSITIVE TESTS
 

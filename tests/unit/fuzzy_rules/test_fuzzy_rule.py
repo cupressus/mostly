@@ -1,5 +1,5 @@
-from src.mostly.fuzzy_rules.fuzzy_rule import FuzzyRule
-from src.mostly.fuzzy_rules.logical_operators import And, Is, Not, Or
+from mostly.fuzzy_rules.fuzzy_rule import FuzzyRule
+from mostly.fuzzy_rules.logical_operators import And, Is, Not, Or
 
 
 class TestGetVariableNames:

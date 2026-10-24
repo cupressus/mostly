@@ -1,12 +1,12 @@
 import pytest
 
-from src.mostly.linguistic_variable import LinguisticVariable
-from src.mostly.membership_functions.base import MembershipFunction
-from src.mostly.membership_functions.bimodal_gaussian import MFBimodalGaussian
-from src.mostly.membership_functions.gaussian import MFGaussian
-from src.mostly.membership_functions.generalized_bell import MFGeneralizedBell
-from src.mostly.membership_functions.trapezoidal import MFTrapezoidal
-from src.mostly.membership_functions.triangle import MFTriangular
+from mostly.linguistic_variable import LinguisticVariable
+from mostly.membership_functions.base import MembershipFunction
+from mostly.membership_functions.bimodal_gaussian import MFBimodalGaussian
+from mostly.membership_functions.gaussian import MFGaussian
+from mostly.membership_functions.generalized_bell import MFGeneralizedBell
+from mostly.membership_functions.trapezoidal import MFTrapezoidal
+from mostly.membership_functions.triangle import MFTriangular
 
 
 # region FIXTURES BASE MF

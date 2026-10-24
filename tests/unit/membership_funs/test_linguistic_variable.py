@@ -1,10 +1,10 @@
 import altair as alt
 import pytest
 
-from src.mostly.linguistic_variable import LinguisticVariable
-from src.mostly.membership_functions.triangle import MFTriangular
-from src.mostly.plotting.altair.plot_fuzzy_set import plot_fuzzy_set
-from src.mostly.plotting.altair.plot_linguistic_variable import plot_linguistic_variable
+from mostly.linguistic_variable import LinguisticVariable
+from mostly.membership_functions.triangle import MFTriangular
+from mostly.plotting.altair.plot_fuzzy_set import plot_fuzzy_set
+from mostly.plotting.altair.plot_linguistic_variable import plot_linguistic_variable
 
 # region POSITIVE TESTS
 

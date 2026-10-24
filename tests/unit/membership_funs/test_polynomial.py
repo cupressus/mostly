@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from src.mostly.membership_functions.polynomial import MFPolynomialS, MFPolynomialZ
+from mostly.membership_functions.polynomial import MFPolynomialS, MFPolynomialZ
 
 
 @pytest.mark.parametrize(

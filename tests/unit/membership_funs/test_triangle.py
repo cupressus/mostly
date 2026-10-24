@@ -1,7 +1,7 @@
 import pytest
 
-from src.mostly.membership_functions.trapezoidal import MFTrapezoidal
-from src.mostly.membership_functions.triangle import MFTriangular
+from mostly.membership_functions.trapezoidal import MFTrapezoidal
+from mostly.membership_functions.triangle import MFTriangular
 
 # region POSITIVE TESTS
 

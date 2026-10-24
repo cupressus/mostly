@@ -1,7 +1,7 @@
 import pytest
 from pydantic import ValidationError
 
-from src.mostly.membership_functions.bimodal_gaussian import MFBimodalGaussian
+from mostly.membership_functions.bimodal_gaussian import MFBimodalGaussian
 
 # region POSITIVE TESTS
 
