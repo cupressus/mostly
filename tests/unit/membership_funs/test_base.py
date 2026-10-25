@@ -2,7 +2,7 @@ import math
 
 import pytest
 
-from src.mostly.membership_functions.base import MembershipFunction
+from mostly.membership_functions.base import MembershipFunction
 
 
 def test_cannot_instantiate_abstract_membership_function():

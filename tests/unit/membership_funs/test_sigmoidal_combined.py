@@ -1,8 +1,8 @@
 import pytest
 from pydantic import ValidationError
 
-from src.mostly.membership_functions.sigmoidal import MFSigmoidal
-from src.mostly.membership_functions.sigmoidal_combined import MFSigmoidalCombined
+from mostly.membership_functions.sigmoidal import MFSigmoidal
+from mostly.membership_functions.sigmoidal_combined import MFSigmoidalCombined
 
 
 @pytest.mark.parametrize(

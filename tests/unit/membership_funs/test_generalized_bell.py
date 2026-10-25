@@ -1,6 +1,6 @@
 import pytest
 
-from src.mostly.membership_functions.generalized_bell import MFGeneralizedBell
+from mostly.membership_functions.generalized_bell import MFGeneralizedBell
 
 # region POSITIVE TESTS
 

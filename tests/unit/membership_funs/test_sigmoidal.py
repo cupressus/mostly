@@ -3,7 +3,7 @@ from math import exp
 import pytest
 from pydantic import ValidationError
 
-from src.mostly.membership_functions.sigmoidal import MFSigmoidal
+from mostly.membership_functions.sigmoidal import MFSigmoidal
 
 
 @pytest.mark.parametrize(

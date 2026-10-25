@@ -9,6 +9,7 @@ from .themes import mostly_light  # noqa: F401
 alt.theme.enable("mostly_light")
 
 __all__ = [
+    "mostly_light",
     "plot_inference_inputs",
     "plot_inference_outputs",
     "plot_fuzzy_set",

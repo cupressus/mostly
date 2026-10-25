@@ -1,6 +1,6 @@
 import pytest
 
-from src.mostly.membership_functions.crisp import MFCrisp
+from mostly.membership_functions.crisp import MFCrisp
 
 
 @pytest.mark.parametrize(
