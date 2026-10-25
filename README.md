@@ -10,12 +10,16 @@ Install the core fuzzy-inference workflow:
 
 ```bash
 pip install mostly
+uv add mostly
+poetry add mostly
 ```
 
 Install Altair plotting support when needed:
 
 ```bash
 pip install "mostly[plotting]"
+uv add "mostly[plotting]"
+poetry add "mostly[plotting]"
 ```
 
 ## Usage
