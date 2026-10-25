@@ -43,6 +43,7 @@ nav:
   - Introduction: index.md
   - Tutorials: 
     - Membership functions: mf.ipynb
+    - Tipping Problem: tipping_problem.ipynb
   #- Changelog: changelog.md
   #- How-To Guides: how_to_guide.md
   #- Reference: api_reference.md
