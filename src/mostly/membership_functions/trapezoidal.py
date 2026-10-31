@@ -6,31 +6,26 @@ from .base import MembershipFunction
 
 
 class MFTrapezoidal(MembershipFunction):
-    """Trapezoidal Membership Function.
+    """A trapezoidal membership function, optionally with one shoulder.
 
-    A fuzzy membership function defined by four points (`a`, `b`, `c`, `d`) forming a trapezoidal shape.
-    Derived shapes (e.g. Triangles) are valid.
+    Points must satisfy `a <= b <= c <= d`. A single vertical outer edge
+    creates a shoulder; both outer edges cannot be vertical. When `b == c`,
+    the plateau reduces to a triangular peak.
 
-    Parameters
-    ----------
-    a : FiniteFloat
-        The left foot of the trapezoid (start of the rising edge).
-    b : FiniteFloat
-        The left shoulder of the trapezoid (start of the plateau).
-    c : FiniteFloat
-        The right shoulder of the trapezoid (end of the plateau).
-    d : FiniteFloat
-        The right foot of the trapezoid (end of the falling edge).
+    Attributes:
+        a: Left foot.
+        b: Start of the plateau.
+        c: End of the plateau.
+        d: Right foot.
 
-    Methods
-    -------
-    __call__
-        Calculates the degree of membership for the input `x`.
+    Raises:
+        ValidationError: If points are non-finite, out of order, or both
+            outer edges have zero width.
 
-    Raises
-    ------
-    ValueError
-        If the trapezoid is not valid (e.g., points not in order, all points equal, etc.).
+    Examples:
+        >>> from mostly.membership_functions import MFTrapezoidal
+        >>> MFTrapezoidal(a=0.0, b=1.0, c=2.0, d=3.0)(1.5)
+        1.0
 
     """
 
@@ -41,7 +36,7 @@ class MFTrapezoidal(MembershipFunction):
 
     @model_validator(mode="after")
     def compliance(self) -> "MFTrapezoidal":
-        """Validate model for correct Trapezoid."""
+        """Validate point ordering and reject invalid vertical edges."""
         if self.a > self.b or self.c > self.d or self.b > self.c:
             raise ValueError("Trapezoid points must satisfy a ≤ b ≤ c ≤ d")
         elif self.a == self.b == self.c == self.d:
@@ -54,7 +49,7 @@ class MFTrapezoidal(MembershipFunction):
     @computed_field
     @property
     def shape(self) -> Literal["left", "regular", "right"]:
-        """Trapezoid Type."""
+        """Classify the shape as `left`, `right`, or `regular`."""
         match True:
             case _ if self.a == self.b and self.c != self.d:
                 return "left"
@@ -65,7 +60,7 @@ class MFTrapezoidal(MembershipFunction):
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
-        """Calculate degree of Membership for a given input `x`."""
+        """Evaluate the trapezoidal membership at a finite scalar."""
         match self.shape:
             case "left":
                 if x <= self.a:

@@ -6,33 +6,26 @@ from .base import MembershipFunction
 
 
 class MFBimodalGaussian(MembershipFunction):
-    """Bimodal Gaussian Membership Function.
+    """Combine two Gaussians into a piecewise membership function.
 
-    A fuzzy membership function combining two Gaussian distributions with piecewise behavior.
+    If `left_mean <= right_mean`, the value is 1.0 between the means and
+    follows the corresponding Gaussian outside them. If the means are
+    reversed, the value is the product of both Gaussians.
 
-    When left_mean <= right_mean:
-        - Returns Gaussian tail for x < left_mean
-        - Returns 1.0 (plateau) for left_mean <= x <= right_mean
-        - Returns Gaussian tail for x > right_mean
+    Attributes:
+        left_mean: Center of the left Gaussian.
+        left_sigma: Positive standard deviation of the left Gaussian.
+        right_mean: Center of the right Gaussian.
+        right_sigma: Positive standard deviation of the right Gaussian.
 
-    When left_mean > right_mean:
-        - Returns product of both Gaussian distributions (peak < 1.0)
+    Raises:
+        ValidationError: If a field is non-finite or either sigma is not positive.
 
-    Parameters
-    ----------
-    left_mean : FiniteFloat
-        Center (mean) of the left Gaussian
-    left_sigma : FiniteFloat
-        Standard deviation of the left Gaussian (must be positive)
-    right_mean : FiniteFloat
-        Center (mean) of the right Gaussian
-    right_sigma : FiniteFloat
-        Standard deviation of the right Gaussian (must be positive)
-
-    Methods
-    -------
-    __call__
-        Calculates the degree of membership for the input `x`.
+    Examples:
+        >>> from mostly.membership_functions import MFBimodalGaussian
+        >>> mf = MFBimodalGaussian(left_mean=0.0, left_sigma=1.0, right_mean=2.0, right_sigma=1.0)
+        >>> mf(1.0)
+        1.0
 
     """
 
@@ -43,7 +36,7 @@ class MFBimodalGaussian(MembershipFunction):
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
-        """Calculate degree of membership for a given input `x`."""
+        """Evaluate the piecewise Gaussian membership at a finite scalar."""
         # Calculate individual Gaussian values
         z_left = (x - self.left_mean) / self.left_sigma
         gauss_left = exp(-0.5 * z_left * z_left)

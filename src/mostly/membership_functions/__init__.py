@@ -1,4 +1,9 @@
-"""Membership functions for fuzzy logic systems."""
+"""Scalar membership functions for fuzzy inference.
+
+Import concrete models from this package and call them with a finite scalar
+to evaluate membership. Some computations can overflow or produce non-finite
+results for extreme finite inputs or model fields.
+"""
 
 from .base import MembershipFunction
 from .bimodal_gaussian import MFBimodalGaussian

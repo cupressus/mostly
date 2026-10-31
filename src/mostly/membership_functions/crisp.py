@@ -4,25 +4,27 @@ from .base import MembershipFunction
 
 
 class MFCrisp(MembershipFunction):
-    """Crisp Membership Function.
+    """Binary membership over an interval with configurable endpoints.
 
-    A fuzzy membership function defined by a crisp (binary) distribution.
+    By default the interval is `(left, right]`: the left endpoint is excluded
+    and the right endpoint is included. Equal bounds are valid only when both
+    endpoints are included.
 
-    Parameters
-    ----------
-    left : FiniteFloat
-        Left boundary of the crisp membership function
-    right : FiniteFloat
-        Right boundary of the crisp membership function
-    include_left : bool
-        Whether the left boundary is inclusive (default: True)
-    include_right : bool
-        Whether the right boundary is inclusive (default: False)
+    Attributes:
+        left: Lower interval boundary.
+        right: Upper interval boundary; must be at least `left`.
+        include_left: Whether the left endpoint is included.
+        include_right: Whether the right endpoint is included.
 
-    Methods
-    -------
-    __call__
-        Calculates the degree of membership for the input `x`.
+    Raises:
+        ValidationError: If bounds are non-finite or reversed, or equal bounds
+            do not include both endpoints.
+
+    Examples:
+        >>> from mostly.membership_functions import MFCrisp
+        >>> interval = MFCrisp(left=0.0, right=1.0)
+        >>> interval(0.0), interval(1.0)
+        (0.0, 1.0)
 
     """
 
@@ -33,7 +35,7 @@ class MFCrisp(MembershipFunction):
 
     @model_validator(mode="after")
     def compliance(self) -> "MFCrisp":
-        """Validate interval bounds and boundary-inclusion consistency."""
+        """Validate bound ordering and inclusion of equal endpoints."""
         if self.left > self.right:
             raise ValueError("Crisp bounds must satisfy left ≤ right")
 
@@ -45,7 +47,7 @@ class MFCrisp(MembershipFunction):
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
-        """Calculate degree of Membership for a given input `x`."""
+        """Return 1.0 inside the interval and 0.0 outside it."""
         left_ok = x >= self.left if self.include_left else x > self.left
         right_ok = x <= self.right if self.include_right else x < self.right
 
