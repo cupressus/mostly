@@ -36,15 +36,27 @@ extra:
 
 plugins:
   - mkdocs-jupyter:
-        include: ["*.ipynb"]
-        execute: False
+      include: ["*.ipynb"]
+      execute: false
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          paths: [src]
+          options:
+            docstring_style: google
+            show_root_heading: true
+            show_root_full_path: false
+            show_signature_annotations: true
+            show_source: false
 
 nav:
   - Introduction: index.md
   - Tutorials: 
     - Membership functions: mf.ipynb
     - Tipping Problem: tipping_problem.ipynb
+  - API reference:
+    - Membership functions: reference/membership-functions.md
   #- Changelog: changelog.md
   #- How-To Guides: how_to_guide.md
-  #- Reference: api_reference.md
   #- Explanation: changelog.md

@@ -176,6 +176,8 @@ fuzzified inputs and aggregated outputs.
 - [Introduction](./docs/index.md)
 - [Membership functions tutorial](./docs/mf.ipynb)
 - [Tipping-problem tutorial](./docs/tipping_problem.ipynb)
+- [Membership functions API reference source](./docs/reference/membership-functions.md)
+  (rendered when you build or preview the docs)
 - [API source](./src/mostly)
 
 ## Development
@@ -190,5 +192,12 @@ uv run pytest
 To preview the documentation locally:
 
 ```bash
-uv run mkdocs serve
+uv run --group docs mkdocs serve
+```
+
+Build the API reference and check membership-function docstring examples:
+
+```bash
+uv run --group docs mkdocs build --strict
+uv run --group test pytest tests/unit/membership_funs/test_docstrings.py
 ```
