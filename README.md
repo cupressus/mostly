@@ -199,5 +199,5 @@ Build the API reference and check membership-function docstring examples:
 
 ```bash
 uv run --group docs mkdocs build --strict
-uv run --group test pytest tests/unit/membership_funs/test_docstrings.py
+uv run --group test pytest --doctest-modules src/mostly/membership_functions
 ```
