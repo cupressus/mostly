@@ -4,21 +4,21 @@ from .base import MembershipFunction
 
 
 class MFPolynomialZ(MembershipFunction):
-    """Z-shaped Polynomial Membership Function.
+    """A Z-shaped polynomial that falls smoothly from 1.0 to 0.0.
 
-    A fuzzy membership function defined by a polynomial.
+    Membership is 1.0 at and below `shoulder` and 0.0 at and above `foot`.
 
-    Parameters
-    ----------
-    shoulder : FiniteFloat
-        *Shoulder* of the membership function
-    foot : FiniteFloat
-        *Foot* of the membership function
+    Attributes:
+        shoulder: Start of the falling transition.
+        foot: End of the transition; must be greater than `shoulder`.
 
-    Methods
-    -------
-    __call__
-        Calculates the degree of membership for the input `x`.
+    Raises:
+        ValidationError: If either point is non-finite or `shoulder >= foot`.
+
+    Examples:
+        >>> from mostly.membership_functions import MFPolynomialZ
+        >>> MFPolynomialZ(shoulder=0.0, foot=2.0)(1.0)
+        0.5
 
     """
 
@@ -27,14 +27,14 @@ class MFPolynomialZ(MembershipFunction):
 
     @model_validator(mode="after")
     def compliance(self) -> "MFPolynomialZ":
-        """Validate model for correct Polynomial."""
+        """Validate that the shoulder precedes the foot."""
         if self.shoulder >= self.foot:
             raise ValueError("For 'left_open' variant, shoulder must be less than foot")
         return self
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
-        """Calculate degree of Membership for a given input `x`."""
+        """Evaluate the falling polynomial at a finite scalar."""
         match x:
             case x if x <= self.shoulder:
                 return 1.0
@@ -49,21 +49,21 @@ class MFPolynomialZ(MembershipFunction):
 
 
 class MFPolynomialS(MembershipFunction):
-    """S-shaped Polynomial Membership Function.
+    """An S-shaped polynomial that rises smoothly from 0.0 to 1.0.
 
-    A fuzzy membership function defined by a polynomial.
+    Membership is 0.0 at and below `foot` and 1.0 at and above `shoulder`.
 
-    Parameters
-    ----------
-    shoulder : FiniteFloat
-        *Shoulder* of the membership function
-    foot : FiniteFloat
-        *Foot* of the membership function
+    Attributes:
+        shoulder: End of the rising transition.
+        foot: Start of the transition; must be less than `shoulder`.
 
-    Methods
-    -------
-    __call__
-        Calculates the degree of membership for the input `x`.
+    Raises:
+        ValidationError: If either point is non-finite or `foot >= shoulder`.
+
+    Examples:
+        >>> from mostly.membership_functions import MFPolynomialS
+        >>> MFPolynomialS(foot=0.0, shoulder=2.0)(1.0)
+        0.5
 
     """
 
@@ -72,14 +72,14 @@ class MFPolynomialS(MembershipFunction):
 
     @model_validator(mode="after")
     def compliance(self) -> "MFPolynomialS":
-        """Validate model for correct Polynomial."""
+        """Validate that the foot precedes the shoulder."""
         if self.foot >= self.shoulder:
             raise ValueError("For 'right_open' variant, foot must be less than shoulder")
         return self
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
-        """Calculate degree of Membership for a given input `x`."""
+        """Evaluate the rising polynomial at a finite scalar."""
         match x:
             case x if x <= self.foot:
                 return 0.0

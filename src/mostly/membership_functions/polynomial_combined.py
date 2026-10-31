@@ -5,21 +5,26 @@ from .polynomial import MFPolynomialS, MFPolynomialZ
 
 
 class MFPolynomialCombined(MembershipFunction):
-    """Combined Polynomial Membership Function.
+    """Combine rising and falling polynomials around a plateau of 1.0.
 
-    A fuzzy membership function defined by the combination of two polynomials.
+    The left shoulder must not exceed the right shoulder; equal shoulders
+    are allowed. Outside the plateau, evaluation delegates to the
+    corresponding polynomial.
 
-    Parameters
-    ----------
-    left : MFPolynomialS
-        The left polynomial, which must be of the 'right_open' variant.
-    right : MFPolynomialZ
-        The right polynomial, which must be of the 'left_open' variant.
+    Attributes:
+        left: Rising S-shaped polynomial.
+        right: Falling Z-shaped polynomial.
 
-    Methods
-    -------
-    __call__
-        Calculates the degree of membership for the input `x`.
+    Raises:
+        ValidationError: If the polynomials are invalid or their shoulders
+            are in reverse order.
+
+    Examples:
+        >>> from mostly.membership_functions import MFPolynomialCombined, MFPolynomialS, MFPolynomialZ
+        >>> rising = MFPolynomialS(foot=0.0, shoulder=1.0)
+        >>> falling = MFPolynomialZ(shoulder=1.0, foot=2.0)
+        >>> MFPolynomialCombined(left=rising, right=falling)(1.0)
+        1.0
 
     """
 
@@ -28,14 +33,14 @@ class MFPolynomialCombined(MembershipFunction):
 
     @model_validator(mode="after")
     def compliance(self) -> "MFPolynomialCombined":
-        """Validate model for correct Combined Polynomial."""
+        """Validate the ordering of the component shoulders."""
         if self.left.shoulder > self.right.shoulder:
             raise ValueError("Left shoulder must be less than right shoulder")
         return self
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
-        """Calculate degree of Membership for a given input `x`."""
+        """Evaluate the plateau or the appropriate component polynomial."""
         match x:
             case x if self.left.shoulder <= x <= self.right.shoulder:
                 return 1.0

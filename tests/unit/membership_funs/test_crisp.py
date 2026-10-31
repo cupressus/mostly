@@ -6,15 +6,15 @@ from mostly.membership_functions.crisp import MFCrisp
 @pytest.mark.parametrize(
     "input,expected",
     [
-        pytest.param(-1.0, 0.0, id="default-open-right-oob-left"),
-        pytest.param(0.0, 0.0, id="default-open-right-left-edge-included"),
-        pytest.param(4.999, 1.0, id="default-open-right-interior"),
-        pytest.param(5.0, 1.0, id="default-open-right-right-edge-excluded"),
-        pytest.param(6.0, 0.0, id="default-open-right-oob-right"),
+        pytest.param(-1.0, 0.0, id="default-open-left-oob-left"),
+        pytest.param(0.0, 0.0, id="default-open-left-left-edge-excluded"),
+        pytest.param(4.999, 1.0, id="default-open-left-interior"),
+        pytest.param(5.0, 1.0, id="default-open-left-right-edge-included"),
+        pytest.param(6.0, 0.0, id="default-open-left-oob-right"),
     ],
 )
-def test_default_left_closed_right_open_membership(input: float, expected: float) -> None:
-    """Default MFCrisp should model [left, right)."""
+def test_default_left_open_right_closed_membership(input: float, expected: float) -> None:
+    """Default MFCrisp should model (left, right]."""
     mf = MFCrisp(left=0.0, right=5.0)
     assert mf(input) == expected
 

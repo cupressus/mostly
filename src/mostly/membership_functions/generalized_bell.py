@@ -4,27 +4,23 @@ from .base import MembershipFunction
 
 
 class MFGeneralizedBell(MembershipFunction):
-    """Generalized Bell-Shaped Membership Function.
+    """A symmetric generalized bell membership function.
 
-    A fuzzy membership function defined by the generalized bell curve.
+    Membership is 1.0 at `center` and 0.5 at a distance of `width` from it.
+    The `slope` controls the steepness of the transition.
 
-    Parameters
-    ----------
-    width : FiniteFloat
-        Half-width at half-maximum; controls the width of the bell curve.
-    slope : FiniteFloat
-        Controls the steepness of the transition slopes.
-    center : FiniteFloat
-        Center of the bell curve.
+    Attributes:
+        width: Positive half-width at half-maximum.
+        slope: Positive parameter controlling steepness.
+        center: Center of the curve.
 
-    Methods
-    -------
-    __call__
-        Calculates the degree of membership for the input `x`.
+    Raises:
+        ValidationError: If a field is non-finite or `width` or `slope` is not positive.
 
-    Notes
-    -----
-    Formula: 1 / (1 + (|(x - center) / width|)^(2 * slope))
+    Examples:
+        >>> from mostly.membership_functions import MFGeneralizedBell
+        >>> MFGeneralizedBell(width=2.0, slope=1.0, center=0.0)(2.0)
+        0.5
 
     """
 
@@ -34,5 +30,11 @@ class MFGeneralizedBell(MembershipFunction):
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
-        """Calculate degree of Membership for a given input `x`."""
+        """Evaluate the bell curve at a finite scalar.
+
+        Raises:
+            OverflowError: If finite values of `abs((x - center) / width)`
+                and `2 * slope` produce a power too large for a float.
+
+        """
         return 1.0 / (1.0 + abs((x - self.center) / self.width) ** (2.0 * self.slope))

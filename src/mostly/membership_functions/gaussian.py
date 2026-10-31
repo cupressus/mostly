@@ -6,21 +6,19 @@ from .base import MembershipFunction
 
 
 class MFGaussian(MembershipFunction):
-    """Gaussian Membership Function.
+    """A Gaussian membership function with a peak of 1.0 at its mean.
 
-    A fuzzy membership function defined by a Gaussian (normal) distribution.
+    Attributes:
+        mean: Center of the curve.
+        sigma: Positive standard deviation controlling the curve's width.
 
-    Parameters
-    ----------
-    mean : FiniteFloat
-        Center (mean/median/mode) of the Gaussian
-    sigma : FiniteFloat
-        Standard deviation of the Gaussian
+    Raises:
+        ValidationError: If either field is non-finite or `sigma` is not positive.
 
-    Methods
-    -------
-    __call__
-        Calculates the degree of membership for the input `x`.
+    Examples:
+        >>> from mostly.membership_functions import MFGaussian
+        >>> MFGaussian(mean=0.0, sigma=1.0)(0.0)
+        1.0
 
     """
 
@@ -29,6 +27,6 @@ class MFGaussian(MembershipFunction):
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
-        """Calculate degree of Membership for a given input `x`."""
+        """Evaluate the Gaussian membership at a finite scalar."""
         z = (x - self.mean) / self.sigma
         return exp(-0.5 * z * z)

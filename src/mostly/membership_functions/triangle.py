@@ -6,31 +6,25 @@ from .base import MembershipFunction
 
 
 class MFTriangular(MembershipFunction):
-    """Triangular Membership Function.
+    """A triangular membership function, optionally with one shoulder.
 
-    This class represents a triangular membership function, commonly used in fuzzy logic systems.
-    The triangle is defined by three points: `a` (left foot), `b` (peak), and `c` (right foot).
-    It is possible for `a` and `b` to be equal, resulting in a left-shoulder triangle,
-    and for `b` and `c` to be equal, resulting in a right-shoulder triangle.
+    Points must satisfy `a <= b <= c` and cannot all coincide. Equal `a` and
+    `b` create a left shoulder; equal `b` and `c` create a right shoulder.
+    A shoulder remains at 1.0 beyond its vertical edge in ordinary numeric
+    ranges. Extreme finite inputs or points can produce `NaN` through overflow.
 
-    Parameters
-    ----------
-    a : FiniteFloat
-        The left foot of the triangle.
-    b : FiniteFloat
-        The peak of the triangle.
-    c : FiniteFloat
-        The right foot of the triangle.
+    Attributes:
+        a: Left foot.
+        b: Peak.
+        c: Right foot.
 
-    Methods
-    -------
-    __call__
-        Calculates the degree of membership for the input `x`.
+    Raises:
+        ValidationError: If points are non-finite, out of order, or all equal.
 
-    Raises
-    ------
-    ValueError
-        If the triangle points do not satisfy a ≤ b ≤ c.
+    Examples:
+        >>> from mostly.membership_functions import MFTriangular
+        >>> MFTriangular(a=0.0, b=1.0, c=2.0)(0.5)
+        0.5
 
     """
 
@@ -40,7 +34,7 @@ class MFTriangular(MembershipFunction):
 
     @model_validator(mode="after")
     def compliance(self) -> "MFTriangular":
-        """Validate model for correct Triangle."""
+        """Validate point ordering and reject a fully degenerate triangle."""
         if self.a > self.b or self.b > self.c:
             raise ValueError("Triangle points must satisfy a ≤ b ≤ c")
         if self.a == self.b == self.c:
@@ -50,7 +44,7 @@ class MFTriangular(MembershipFunction):
     @computed_field
     @property
     def shape(self) -> Literal["left", "regular", "right"]:
-        """Triangle Type."""
+        """Classify the shape as `left`, `right`, or `regular`."""
         match True:
             case _ if self.a == self.b:
                 return "left"
@@ -61,7 +55,7 @@ class MFTriangular(MembershipFunction):
 
     @validate_call
     def __call__(self, x: FiniteFloat) -> FiniteFloat:
-        """Calculate degree of Membership for a given input `x`."""
+        """Evaluate the triangular membership at a finite scalar."""
         match self.shape:
             case "regular":
                 return max(min((x - self.a) / (self.b - self.a), (self.c - x) / (self.c - self.b)), 0)
