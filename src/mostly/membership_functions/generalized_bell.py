@@ -33,7 +33,8 @@ class MFGeneralizedBell(MembershipFunction):
         """Evaluate the bell curve at a finite scalar.
 
         Raises:
-            OverflowError: If exponentiation overflows for extreme values.
+            OverflowError: If finite values of `abs((x - center) / width)`
+                and `2 * slope` produce a power too large for a float.
 
         """
         return 1.0 / (1.0 + abs((x - self.center) / self.width) ** (2.0 * self.slope))
