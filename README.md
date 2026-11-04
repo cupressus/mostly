@@ -161,6 +161,7 @@ from mostly.plotting.altair import (
     plot_fuzzy_set,
     plot_inference_inputs,
     plot_inference_outputs,
+    plot_inference_rules,
     plot_linguistic_variable,
 )
 
@@ -169,7 +170,10 @@ chart
 ```
 
 The same backend can visualize an individual fuzzy set as well as a system's
-fuzzified inputs and aggregated outputs.
+fuzzified inputs and aggregated outputs. `plot_inference_rules` returns two
+pandas tables: each rule's firing strength, followed by each consequence's
+final aggregated strength (the maximum membership degree over its output
+range), together with the implication and aggregation methods used.
 
 ## Documentation and examples
 

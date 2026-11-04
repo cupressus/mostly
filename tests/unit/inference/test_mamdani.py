@@ -1,4 +1,5 @@
 import altair as alt
+import pytest
 
 from mostly.fuzzy_rules.fuzzy_rule import FuzzyRule
 from mostly.fuzzy_rules.logical_operators import Is, Or
@@ -7,6 +8,7 @@ from mostly.linguistic_variable import LinguisticVariable
 from mostly.membership_functions.triangle import MFTriangular
 from mostly.plotting.altair.plot_fis_inputs import plot_inference_inputs
 from mostly.plotting.altair.plot_fis_outputs import plot_inference_outputs
+from mostly.plotting.altair.plot_fis_rules import plot_inference_rules
 from mostly.plotting.altair.themes import mostly_light  # noqa: F401
 
 service = LinguisticVariable(
@@ -99,6 +101,40 @@ def test_mamdani_inference_output_plotting():
     output_plot = plot_inference_outputs(fis, crisp_inputs=crisp_inputs)
     assert output_plot is not None
     assert isinstance(output_plot, (alt.Chart, alt.LayerChart, alt.VConcatChart))
+
+
+@pytest.mark.parametrize(
+    ("implication", "aggregation", "expected_result"),
+    [("scale", "max", 0.96), ("clip", "max", 0.96), ("scale", "sum", 1.66)],
+)
+def test_mamdani_rule_tables_show_strengths_and_aggregated_consequences(implication, aggregation, expected_result):
+    """The rule tables expose firing strengths and the aggregate for shared consequences."""
+    test_fis = fis.model_copy(deep=True)
+    test_fis.inference_config.implication = implication
+    test_fis.inference_config.aggregation = aggregation
+    test_fis.fuzzy_rules.append(
+        FuzzyRule(
+            antecedent=Is(concept="food_quality", term="good"),
+            consequences={"tip_amount": "high"},
+        )
+    )
+    crisp_inputs = {"food_quality": 6.5, "service_quality": 9.8}
+
+    rule_table, consequence_table = plot_inference_rules(test_fis, crisp_inputs=crisp_inputs)
+
+    assert rule_table.columns.tolist() == ["Pretty rule", "Firing strength"]
+    assert rule_table.iloc[2]["Pretty rule"] == rules[2].pretty()
+    assert rule_table.iloc[2]["Firing strength"] == pytest.approx(0.96)
+    assert rule_table.iloc[3]["Pretty rule"] == test_fis.fuzzy_rules[3].pretty()
+    assert rule_table.iloc[3]["Firing strength"] == pytest.approx(0.7)
+
+    assert consequence_table.columns.tolist() == ["Consequence", "Result", "Implication", "Aggregation"]
+    assert len(consequence_table) == 3
+    high_consequence = consequence_table[consequence_table["Consequence"] == "tip_amount IS high"]
+    assert len(high_consequence) == 1
+    assert high_consequence.iloc[0]["Result"] == pytest.approx(expected_result)
+    assert high_consequence.iloc[0]["Implication"] == implication
+    assert high_consequence.iloc[0]["Aggregation"] == aggregation
 
 
 def test_mamdani_inference_input_plotting():
