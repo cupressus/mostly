@@ -27,6 +27,7 @@ from mostly.plotting.altair import (
     plot_fuzzy_set,
     plot_inference_inputs,
     plot_inference_outputs,
+    plot_inference_rules,
     plot_linguistic_variable,
 )
 
@@ -72,4 +73,5 @@ def test_altair_exports_documented_plotting_utilities() -> None:
     assert callable(plot_fuzzy_set)
     assert callable(plot_inference_inputs)
     assert callable(plot_inference_outputs)
+    assert callable(plot_inference_rules)
     assert callable(plot_linguistic_variable)
