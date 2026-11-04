@@ -130,6 +130,10 @@ def test_mamdani_rule_plot_shows_firing_strengths_and_aggregated_consequences(ag
     strength_data = spec["datasets"][spec["vconcat"][0]["data"]["name"]]
     assert strength_data[2]["strength"] == pytest.approx(0.96)
     assert strength_data[3]["strength"] == pytest.approx(0.7)
+    assert strength_data[2]["rule"] == rules[2].pretty()
+    assert strength_data[3]["rule"] == test_fis.fuzzy_rules[3].pretty()
+    assert spec["vconcat"][0]["encoding"]["y"]["field"] == "rule"
+    assert spec["vconcat"][0]["encoding"]["x"]["field"] == "strength"
 
     high_chart = next(
         chart
@@ -139,6 +143,10 @@ def test_mamdani_rule_plot_shows_firing_strengths_and_aggregated_consequences(ag
     aggregate_layer = next(layer for layer in high_chart["layer"] if layer["mark"].get("color") == "black")
     aggregate_data = spec["datasets"][aggregate_layer["data"]["name"]]
     assert aggregate_data[-1]["membership"] == pytest.approx(expected_aggregate)
+    rule_layer = next(layer for layer in high_chart["layer"] if layer["mark"].get("color") != "black")
+    rule_data = spec["datasets"][rule_layer["data"]["name"]]
+    assert rule_data[0]["rule"] == rules[2].pretty()
+    assert rule_layer["encoding"]["color"]["field"] == "rule"
 
 
 def test_mamdani_inference_input_plotting():

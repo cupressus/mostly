@@ -16,23 +16,21 @@ def plot_inference_rules(
     strength_data = pd.DataFrame(
         [
             {
-                "rule_id": f"Rule {index}",
                 "rule": rule.pretty(),
                 "strength": strength,
             }
-            for index, (rule, strength) in enumerate(rule_strengths, start=1)
+            for rule, strength in rule_strengths
         ],
-        columns=["rule_id", "rule", "strength"],
+        columns=["rule", "strength"],
     )
     charts: list[alt.Chart | alt.LayerChart] = [
         alt.Chart(strength_data)
         .mark_bar()
         .encode(
-            x=alt.X("rule_id:N", sort=None, title="Rule"),
-            y=alt.Y("strength:Q", scale=alt.Scale(domain=[0, 1]), title="Firing Strength"),
+            x=alt.X("strength:Q", scale=alt.Scale(domain=[0, 1]), title="Firing Strength"),
+            y=alt.Y("rule:N", sort=None, title="Rule"),
             tooltip=[
-                alt.Tooltip("rule_id:N", title="Rule"),
-                alt.Tooltip("rule:N", title="Rule definition"),
+                alt.Tooltip("rule:N", title="Rule"),
                 alt.Tooltip("strength:Q", title="Firing strength", format=".3f"),
             ],
         )
@@ -44,8 +42,8 @@ def plot_inference_rules(
                     f"aggregation: {fis.inference_config.aggregation}"
                 ),
             ),
-            width=450,
-            height=120,
+            width=600,
+            height=max(120, len(rule_strengths) * 40),
         )
     ]
 
@@ -62,7 +60,7 @@ def plot_inference_rules(
         aggregate_vals = np.zeros_like(x_vals)
         rule_charts = []
 
-        for index, (rule, strength) in enumerate(rule_strengths, start=1):
+        for rule, strength in rule_strengths:
             if rule.consequences.get(concept) != term:
                 continue
 
@@ -85,7 +83,6 @@ def plot_inference_rules(
                 {
                     "x": x_vals,
                     "membership": implied_vals,
-                    "rule_id": f"Rule {index}",
                     "rule": rule.pretty(),
                     "strength": strength,
                 }
@@ -99,10 +96,9 @@ def plot_inference_rules(
                         "membership:Q",
                         title="Degree of Membership",
                     ),
-                    color=alt.Color("rule_id:N", title="Rule"),
+                    color=alt.Color("rule:N", title="Rule"),
                     tooltip=[
-                        alt.Tooltip("rule_id:N", title="Rule"),
-                        alt.Tooltip("rule:N", title="Rule definition"),
+                        alt.Tooltip("rule:N", title="Rule"),
                         alt.Tooltip("strength:Q", title="Firing strength", format=".3f"),
                         alt.Tooltip("x:Q", title="Output"),
                         alt.Tooltip("membership:Q", title="Membership", format=".3f"),
