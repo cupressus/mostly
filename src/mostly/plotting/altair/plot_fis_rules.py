@@ -1,4 +1,3 @@
-import altair as alt
 import numpy as np
 import pandas as pd
 
@@ -8,65 +7,38 @@ from ...inference.mamdani import MamdaniFIS
 def plot_inference_rules(
     fis: MamdaniFIS,
     crisp_inputs: dict[str, float],
-) -> alt.VConcatChart:
-    """Plot rule firing strengths and each consequence's implied and aggregated membership."""
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Return tables of rule firing strengths and implied and aggregated consequences."""
     fuzzified_inputs = fis._fuzzification(crisp_inputs)
     rule_strengths = fis._rule_evaluation(fuzzified_inputs)
 
-    strength_data = pd.DataFrame(
+    rule_table = pd.DataFrame(
         [
             {
-                "rule": rule.pretty(),
-                "strength": strength,
+                "Pretty rule": rule.pretty(),
+                "Firing strength": strength,
             }
             for rule, strength in rule_strengths
         ],
-        columns=["rule", "strength"],
+        columns=["Pretty rule", "Firing strength"],
     )
-    charts: list[alt.Chart | alt.LayerChart] = [
-        alt.Chart(strength_data)
-        .mark_bar()
-        .encode(
-            x=alt.X("strength:Q", scale=alt.Scale(domain=[0, 1]), title="Firing Strength"),
-            y=alt.Y("rule:N", sort=None, title="Rule"),
-            tooltip=[
-                alt.Tooltip("rule:N", title="Rule"),
-                alt.Tooltip("strength:Q", title="Firing strength", format=".3f"),
-            ],
-        )
-        .properties(
-            title=alt.Title(
-                "Rule Firing Strengths",
-                subtitle=(
-                    f"implication: {fis.inference_config.implication}; "
-                    f"aggregation: {fis.inference_config.aggregation}"
-                ),
-            ),
-            width=600,
-            height=max(120, len(rule_strengths) * 40),
-        )
-    ]
+    consequence_tables = []
 
-    consequences = dict.fromkeys(
-        (concept, term)
-        for rule, _ in rule_strengths
-        for concept, term in rule.consequences.items()
-    )
-
-    for concept, term in consequences:
+    for concept, term in dict.fromkeys(
+        (concept, term) for rule, _ in rule_strengths for concept, term in rule.consequences.items()
+    ):
         lv = fis.output_variables[concept]
         x_min, x_max = lv.uod
         x_vals = np.linspace(x_min, x_max, fis.inference_config.resolution)
         aggregate_vals = np.zeros_like(x_vals)
-        rule_charts = []
+        rule_curves = []
 
         for rule, strength in rule_strengths:
             if rule.consequences.get(concept) != term:
                 continue
 
-            mf = lv.get_fuzzy_set(term)
             implied_vals = fis._implication(
-                mf,
+                lv.get_fuzzy_set(term),
                 strength,
                 x_vals,
                 fis.inference_config.implication,
@@ -79,67 +51,38 @@ def plot_inference_rules(
                 case "probor":
                     aggregate_vals += implied_vals - aggregate_vals * implied_vals
 
-            rule_data = pd.DataFrame(
-                {
-                    "x": x_vals,
-                    "membership": implied_vals,
-                    "rule": rule.pretty(),
-                    "strength": strength,
-                }
-            )
-            rule_charts.append(
-                alt.Chart(rule_data)
-                .mark_line()
-                .encode(
-                    x=alt.X("x:Q", title=f"UoD: [{x_min}, {x_max}]"),
-                    y=alt.Y(
-                        "membership:Q",
-                        title="Degree of Membership",
-                    ),
-                    color=alt.Color("rule:N", title="Rule"),
-                    tooltip=[
-                        alt.Tooltip("rule:N", title="Rule"),
-                        alt.Tooltip("strength:Q", title="Firing strength", format=".3f"),
-                        alt.Tooltip("x:Q", title="Output"),
-                        alt.Tooltip("membership:Q", title="Membership", format=".3f"),
-                    ],
+            rule_curves.append((rule.pretty(), strength, implied_vals))
+
+        for rule, strength, implied_vals in rule_curves:
+            consequence_tables.append(
+                pd.DataFrame(
+                    {
+                        "Consequence": f"{concept} IS {term}",
+                        "Output": x_vals,
+                        "Pretty rule": rule,
+                        "Firing strength": strength,
+                        "Implication": fis.inference_config.implication,
+                        "Implied membership": implied_vals,
+                        "Aggregation": fis.inference_config.aggregation,
+                        "Aggregated membership": aggregate_vals,
+                    }
                 )
             )
 
-        aggregate_data = pd.DataFrame(
-            {
-                "x": x_vals,
-                "membership": aggregate_vals,
-            }
+    consequence_table = (
+        pd.concat(consequence_tables, ignore_index=True)
+        if consequence_tables
+        else pd.DataFrame(
+            columns=[
+                "Consequence",
+                "Output",
+                "Pretty rule",
+                "Firing strength",
+                "Implication",
+                "Implied membership",
+                "Aggregation",
+                "Aggregated membership",
+            ]
         )
-        aggregate_chart = (
-            alt.Chart(aggregate_data)
-            .mark_line(color="black", strokeDash=[6, 3], strokeWidth=3)
-            .encode(
-                x=alt.X("x:Q", title=f"UoD: [{x_min}, {x_max}]"),
-                y=alt.Y(
-                    "membership:Q",
-                    title="Degree of Membership",
-                ),
-                tooltip=[
-                    alt.Tooltip("x:Q", title="Output"),
-                    alt.Tooltip("membership:Q", title="Aggregated membership", format=".3f"),
-                ],
-            )
-        )
-        charts.append(
-            (alt.layer(*rule_charts, aggregate_chart) if rule_charts else aggregate_chart).properties(
-                title=alt.Title(
-                    f"Consequence: {concept} IS {term}",
-                    subtitle=f"Dashed black line: {fis.inference_config.aggregation}-aggregated result",
-                ),
-                width=450,
-                height=300,
-            )
-        )
-
-    return alt.vconcat(*charts, spacing=15).resolve_scale(
-        color="independent",
-        x="independent",
-        y="independent",
     )
+    return rule_table, consequence_table

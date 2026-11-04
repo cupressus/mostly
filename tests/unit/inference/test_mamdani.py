@@ -104,8 +104,8 @@ def test_mamdani_inference_output_plotting():
 
 
 @pytest.mark.parametrize(("aggregation", "expected_aggregate"), [("max", 0.96), ("sum", 1.66)])
-def test_mamdani_rule_plot_shows_firing_strengths_and_aggregated_consequences(aggregation, expected_aggregate):
-    """The rule plot exposes firing strengths and the aggregate for shared consequences."""
+def test_mamdani_rule_tables_show_strengths_and_aggregated_consequences(aggregation, expected_aggregate):
+    """The rule tables expose firing strengths and the aggregate for shared consequences."""
     test_fis = fis.model_copy(deep=True)
     test_fis.inference_config.implication = "scale"
     test_fis.inference_config.aggregation = aggregation
@@ -117,36 +117,29 @@ def test_mamdani_rule_plot_shows_firing_strengths_and_aggregated_consequences(ag
     )
     crisp_inputs = {"food_quality": 6.5, "service_quality": 9.8}
 
-    rule_plot = plot_inference_rules(test_fis, crisp_inputs=crisp_inputs)
-    spec = rule_plot.to_dict()
-    serialized = str(spec)
+    rule_table, consequence_table = plot_inference_rules(test_fis, crisp_inputs=crisp_inputs)
 
-    assert isinstance(rule_plot, alt.VConcatChart)
-    assert "Rule Firing Strengths" in serialized
-    assert "Consequence: tip_amount IS high" in serialized
-    assert f"implication: scale; aggregation: {aggregation}" in serialized
-    assert f"Dashed black line: {aggregation}-aggregated result" in serialized
+    assert rule_table.columns.tolist() == ["Pretty rule", "Firing strength"]
+    assert rule_table.iloc[2]["Pretty rule"] == rules[2].pretty()
+    assert rule_table.iloc[2]["Firing strength"] == pytest.approx(0.96)
+    assert rule_table.iloc[3]["Pretty rule"] == test_fis.fuzzy_rules[3].pretty()
+    assert rule_table.iloc[3]["Firing strength"] == pytest.approx(0.7)
 
-    strength_data = spec["datasets"][spec["vconcat"][0]["data"]["name"]]
-    assert strength_data[2]["strength"] == pytest.approx(0.96)
-    assert strength_data[3]["strength"] == pytest.approx(0.7)
-    assert strength_data[2]["rule"] == rules[2].pretty()
-    assert strength_data[3]["rule"] == test_fis.fuzzy_rules[3].pretty()
-    assert spec["vconcat"][0]["encoding"]["y"]["field"] == "rule"
-    assert spec["vconcat"][0]["encoding"]["x"]["field"] == "strength"
-
-    high_chart = next(
-        chart
-        for chart in spec["vconcat"]
-        if chart.get("title", {}).get("text") == "Consequence: tip_amount IS high"
-    )
-    aggregate_layer = next(layer for layer in high_chart["layer"] if layer["mark"].get("color") == "black")
-    aggregate_data = spec["datasets"][aggregate_layer["data"]["name"]]
-    assert aggregate_data[-1]["membership"] == pytest.approx(expected_aggregate)
-    rule_layer = next(layer for layer in high_chart["layer"] if layer["mark"].get("color") != "black")
-    rule_data = spec["datasets"][rule_layer["data"]["name"]]
-    assert rule_data[0]["rule"] == rules[2].pretty()
-    assert rule_layer["encoding"]["color"]["field"] == "rule"
+    high_consequence = consequence_table[consequence_table["Consequence"] == "tip_amount IS high"]
+    assert set(high_consequence["Pretty rule"]) == {
+        rules[2].pretty(),
+        test_fis.fuzzy_rules[3].pretty(),
+    }
+    assert set(high_consequence["Implication"]) == {"scale"}
+    assert set(high_consequence["Aggregation"]) == {aggregation}
+    at_maximum = high_consequence[high_consequence["Output"] == 25.0]
+    assert at_maximum["Aggregated membership"].unique().tolist() == pytest.approx([expected_aggregate])
+    assert at_maximum.loc[at_maximum["Pretty rule"] == rules[2].pretty(), "Implied membership"].iloc[
+        0
+    ] == pytest.approx(0.96)
+    assert at_maximum.loc[at_maximum["Pretty rule"] == test_fis.fuzzy_rules[3].pretty(), "Implied membership"].iloc[
+        0
+    ] == pytest.approx(0.7)
 
 
 def test_mamdani_inference_input_plotting():

@@ -170,8 +170,11 @@ chart
 ```
 
 The same backend can visualize an individual fuzzy set as well as a system's
-fuzzified inputs, aggregated outputs, and rule firing strengths with the
-implied and aggregated membership functions for each consequence.
+fuzzified inputs and aggregated outputs. `plot_inference_rules` returns two
+pandas tables: each rule's firing strength, followed by each consequence's
+per-rule implied membership and aggregated membership across the output range.
+The consequence table also identifies the implication and aggregation methods
+used to calculate each value.
 
 ## Documentation and examples
 
