@@ -103,11 +103,14 @@ def test_mamdani_inference_output_plotting():
     assert isinstance(output_plot, (alt.Chart, alt.LayerChart, alt.VConcatChart))
 
 
-@pytest.mark.parametrize(("aggregation", "expected_aggregate"), [("max", 0.96), ("sum", 1.66)])
-def test_mamdani_rule_tables_show_strengths_and_aggregated_consequences(aggregation, expected_aggregate):
+@pytest.mark.parametrize(
+    ("implication", "aggregation", "expected_result"),
+    [("scale", "max", 0.96), ("clip", "max", 0.96), ("scale", "sum", 1.66)],
+)
+def test_mamdani_rule_tables_show_strengths_and_aggregated_consequences(implication, aggregation, expected_result):
     """The rule tables expose firing strengths and the aggregate for shared consequences."""
     test_fis = fis.model_copy(deep=True)
-    test_fis.inference_config.implication = "scale"
+    test_fis.inference_config.implication = implication
     test_fis.inference_config.aggregation = aggregation
     test_fis.fuzzy_rules.append(
         FuzzyRule(
@@ -125,21 +128,13 @@ def test_mamdani_rule_tables_show_strengths_and_aggregated_consequences(aggregat
     assert rule_table.iloc[3]["Pretty rule"] == test_fis.fuzzy_rules[3].pretty()
     assert rule_table.iloc[3]["Firing strength"] == pytest.approx(0.7)
 
+    assert consequence_table.columns.tolist() == ["Consequence", "Result", "Implication", "Aggregation"]
+    assert len(consequence_table) == 3
     high_consequence = consequence_table[consequence_table["Consequence"] == "tip_amount IS high"]
-    assert set(high_consequence["Pretty rule"]) == {
-        rules[2].pretty(),
-        test_fis.fuzzy_rules[3].pretty(),
-    }
-    assert set(high_consequence["Implication"]) == {"scale"}
-    assert set(high_consequence["Aggregation"]) == {aggregation}
-    at_maximum = high_consequence[high_consequence["Output"] == 25.0]
-    assert at_maximum["Aggregated membership"].unique().tolist() == pytest.approx([expected_aggregate])
-    assert at_maximum.loc[at_maximum["Pretty rule"] == rules[2].pretty(), "Implied membership"].iloc[
-        0
-    ] == pytest.approx(0.96)
-    assert at_maximum.loc[at_maximum["Pretty rule"] == test_fis.fuzzy_rules[3].pretty(), "Implied membership"].iloc[
-        0
-    ] == pytest.approx(0.7)
+    assert len(high_consequence) == 1
+    assert high_consequence.iloc[0]["Result"] == pytest.approx(expected_result)
+    assert high_consequence.iloc[0]["Implication"] == implication
+    assert high_consequence.iloc[0]["Aggregation"] == aggregation
 
 
 def test_mamdani_inference_input_plotting():

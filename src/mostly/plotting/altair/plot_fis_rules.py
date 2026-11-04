@@ -22,7 +22,7 @@ def plot_inference_rules(
         ],
         columns=["Pretty rule", "Firing strength"],
     )
-    consequence_tables = []
+    consequence_rows = []
 
     for concept, term in dict.fromkeys(
         (concept, term) for rule, _ in rule_strengths for concept, term in rule.consequences.items()
@@ -31,8 +31,6 @@ def plot_inference_rules(
         x_min, x_max = lv.uod
         x_vals = np.linspace(x_min, x_max, fis.inference_config.resolution)
         aggregate_vals = np.zeros_like(x_vals)
-        rule_curves = []
-
         for rule, strength in rule_strengths:
             if rule.consequences.get(concept) != term:
                 continue
@@ -51,38 +49,17 @@ def plot_inference_rules(
                 case "probor":
                     aggregate_vals += implied_vals - aggregate_vals * implied_vals
 
-            rule_curves.append((rule.pretty(), strength, implied_vals))
-
-        for rule, strength, implied_vals in rule_curves:
-            consequence_tables.append(
-                pd.DataFrame(
-                    {
-                        "Consequence": f"{concept} IS {term}",
-                        "Output": x_vals,
-                        "Pretty rule": rule,
-                        "Firing strength": strength,
-                        "Implication": fis.inference_config.implication,
-                        "Implied membership": implied_vals,
-                        "Aggregation": fis.inference_config.aggregation,
-                        "Aggregated membership": aggregate_vals,
-                    }
-                )
-            )
-
-    consequence_table = (
-        pd.concat(consequence_tables, ignore_index=True)
-        if consequence_tables
-        else pd.DataFrame(
-            columns=[
-                "Consequence",
-                "Output",
-                "Pretty rule",
-                "Firing strength",
-                "Implication",
-                "Implied membership",
-                "Aggregation",
-                "Aggregated membership",
-            ]
+        consequence_rows.append(
+            {
+                "Consequence": f"{concept} IS {term}",
+                "Result": float(np.max(aggregate_vals, initial=0.0)),
+                "Implication": fis.inference_config.implication,
+                "Aggregation": fis.inference_config.aggregation,
+            }
         )
+
+    consequence_table = pd.DataFrame(
+        consequence_rows,
+        columns=["Consequence", "Result", "Implication", "Aggregation"],
     )
     return rule_table, consequence_table
