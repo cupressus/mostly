@@ -24,7 +24,7 @@ def plot_inference_rules(
         ],
         columns=["rule_id", "rule", "strength"],
     )
-    charts = [
+    charts: list[alt.Chart | alt.LayerChart] = [
         alt.Chart(strength_data)
         .mark_bar()
         .encode(
