@@ -23,7 +23,7 @@ def plot_linguistic_variable(
     chart = alt.layer(*charts).properties(
         title=alt.Title(
             f'Fuzzy Sets of Linguistic Variable "{str.capitalize(lv.concept)}"',
-            subtitle=f"Input: {float(highlight)}" if highlight else "",
+            subtitle=f"Input: {float(highlight)}" if highlight is not None else "",
         )
     )
 
