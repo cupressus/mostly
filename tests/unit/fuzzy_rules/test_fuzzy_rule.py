@@ -121,6 +121,29 @@ class TestGetVariableNames:
         assert rule.get_variable_names() == {"temperature", "humidity", "pressure"}
 
 
+class TestLogicalEvaluation:
+    """Tests for evaluating fuzzy logical operators."""
+
+    def test_and_uses_minimum_membership(self) -> None:
+        """Test conjunction returns the lowest child membership."""
+        expression = And(
+            children=[
+                Is(concept="temperature", term="warm"),
+                Is(concept="humidity", term="high"),
+            ]
+        )
+        fuzzified = {"temperature": {"warm": 0.8}, "humidity": {"high": 0.3}}
+
+        assert expression.eval(fuzzified) == 0.3
+
+    def test_not_complements_membership(self) -> None:
+        """Test negation returns one minus the child membership."""
+        expression = Not(child=Is(concept="temperature", term="warm"))
+        fuzzified = {"temperature": {"warm": 0.3}}
+
+        assert expression.eval(fuzzified) == 0.7
+
+
 class TestStr:
     """Tests for FuzzyRule.__str__() method."""
 

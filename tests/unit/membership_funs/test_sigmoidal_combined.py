@@ -50,6 +50,16 @@ def test_invalid_method_raises_validation_error() -> None:
         MFSigmoidalCombined(mfs=(mf1, mf2), method="sum")  # type: ignore
 
 
+def test_invalid_internal_method_raises_value_error() -> None:
+    """Test fallback for an invalid method when model validation is bypassed."""
+    mf1 = MFSigmoidal(a=1.0, c=0.0)
+    mf2 = MFSigmoidal(a=1.0, c=2.0)
+    combined = MFSigmoidalCombined.model_construct(mfs=(mf1, mf2), method="sum")
+
+    with pytest.raises(ValueError, match="Invalid method"):
+        combined(0.0)
+
+
 def test_invalid_mfs_tuple_length_raises_validation_error() -> None:
     """Test tuple length validation for combined sigmoidal definition."""
     mf1 = MFSigmoidal(a=1.0, c=0.0)

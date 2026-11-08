@@ -52,6 +52,15 @@ def test_polynomial_s_invalid_order_raises_validation_error() -> None:
         MFPolynomialS(shoulder=2.0, foot=6.0)
 
 
+def test_polynomial_fallback_for_nan_parameters() -> None:
+    """Test fallback behavior when invalid NaN parameters bypass model validation."""
+    z_mf = MFPolynomialZ.model_construct(shoulder=float("nan"), foot=float("nan"))
+    s_mf = MFPolynomialS.model_construct(shoulder=float("nan"), foot=float("nan"))
+
+    assert z_mf(0.0) == 0.0
+    assert s_mf(0.0) == 0.0
+
+
 @pytest.mark.parametrize("mf", [MFPolynomialZ(shoulder=2.0, foot=6.0), MFPolynomialS(shoulder=6.0, foot=2.0)])
 def test_polynomial_invalid_call_input_raises_validation_error(mf) -> None:
     """Test invalid input type for polynomial call."""
