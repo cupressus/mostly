@@ -8,7 +8,12 @@ def plot_inference_rules(
     fis: MamdaniFIS,
     crisp_inputs: dict[str, float],
 ) -> tuple[pd.DataFrame, pd.DataFrame]:
-    """Return tables of rule firing strengths and implied and aggregated consequences."""
+    """Return tables of rule firing strengths and implied and aggregated consequences.
+
+    Raises:
+        ValueError: If an input is invalid or an unsupported aggregation method is used for a consequence.
+
+    """
     fuzzified_inputs = fis._fuzzification(crisp_inputs)
     rule_strengths = fis._rule_evaluation(fuzzified_inputs)
 
@@ -48,6 +53,8 @@ def plot_inference_rules(
                     aggregate_vals += implied_vals
                 case "probor":
                     aggregate_vals += implied_vals - aggregate_vals * implied_vals
+                case _:
+                    raise ValueError(f"Unknown aggregation method: {fis.inference_config.aggregation}")
 
         consequence_rows.append(
             {

@@ -49,6 +49,15 @@ def test_polynomial_combined_invalid_shoulder_order_raises_validation_error() ->
         MFPolynomialCombined(left=left, right=right)
 
 
+def test_polynomial_combined_fallback_for_nan_shoulders() -> None:
+    """Test fallback behavior when invalid NaN shoulders bypass model validation."""
+    left = MFPolynomialS.model_construct(shoulder=float("nan"), foot=0.0)
+    right = MFPolynomialZ.model_construct(shoulder=float("nan"), foot=10.0)
+    mf = MFPolynomialCombined.model_construct(left=left, right=right)
+
+    assert mf(5.0) == 0.0
+
+
 def test_polynomial_combined_invalid_call_input_raises_validation_error() -> None:
     """Test invalid input type for combined polynomial call."""
     left = MFPolynomialS(shoulder=4.0, foot=0.0)
